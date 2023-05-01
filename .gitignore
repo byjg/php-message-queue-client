@@ -1,0 +1,4 @@
+vendor
+test_consume.php
+test_publish.php
+composer.lock
