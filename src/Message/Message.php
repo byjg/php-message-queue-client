@@ -6,12 +6,20 @@ use ByJG\MessagingClient\Broker\Queue;
 
 class Message
 {
+    const ACK     = 0b000;
+    const NACK    = 0b001;
+    const REQUEUE = 0b011;
+    const EXIT    = 0b100;
+
     protected $body;
 
     /** @var Queue */
     protected $queue;
 
     protected $headers = [];
+
+    /** @var Queue */
+    protected $deadLetterQueue = null;
 
     public function __construct($body, Queue $queue)
     {
@@ -43,6 +51,17 @@ class Message
     public function withHeaders(array $headers)
     {
         $this->headers = $headers;
+        return $this;
+    }
+
+    public function getDeadLetterQueue()
+    {
+        return $this->deadLetterQueue;
+    }
+
+    public function withDeadLetterQueue(Queue $deadLetterQueue)
+    {
+        $this->deadLetterQueue = $deadLetterQueue;
         return $this;
     }
 }

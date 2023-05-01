@@ -26,6 +26,12 @@ class Queue
         return $this->topic;
     }
 
+    public function withTopic($topic)
+    {
+        $this->topic = $topic;
+        return $this;
+    }
+
     public function withProperty($property, $value)
     {
         $this->properties[$property] = $value;
