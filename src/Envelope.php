@@ -1,6 +1,6 @@
 <?php
 
-namespace ByJG\MessagingClient\Message;
+namespace ByJG\MessagingClient;
 
 use ByJG\MessagingClient\Broker\Queue;
 

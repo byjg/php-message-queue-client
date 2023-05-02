@@ -1,7 +1,6 @@
 <?php
 
-use ByJG\MessagingClient\Broker\Queue;
-use ByJG\MessagingClient\Message\Message;
+use ByJG\MessagingClient\Message;
 use PHPUnit\Framework\TestCase;
 
 class MessageTest extends TestCase

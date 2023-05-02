@@ -2,8 +2,8 @@
 
 namespace ByJG\MessagingClient\Broker;
 
-use ByJG\MessagingClient\Message\Envelope;
-use ByJG\MessagingClient\Message\Message;
+use ByJG\MessagingClient\Envelope;
+use ByJG\MessagingClient\Message;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Exchange\AMQPExchangeType;

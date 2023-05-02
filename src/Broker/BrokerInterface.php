@@ -2,7 +2,7 @@
 
 namespace ByJG\MessagingClient\Broker;
 
-use ByJG\MessagingClient\Message\Envelope;
+use ByJG\MessagingClient\Envelope;
 use ByJG\Util\Uri;
 
 interface BrokerInterface

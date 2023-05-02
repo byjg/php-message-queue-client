@@ -3,8 +3,8 @@
 use ByJG\MessagingClient\Broker\BrokerInterface;
 use ByJG\MessagingClient\Broker\Queue;
 use ByJG\MessagingClient\Broker\RabbitMQBroker;
-use ByJG\MessagingClient\Message\Envelope;
-use ByJG\MessagingClient\Message\Message;
+use ByJG\MessagingClient\Envelope;
+use ByJG\MessagingClient\Message;
 use ByJG\Util\Uri;
 use PHPUnit\Framework\TestCase;
 
