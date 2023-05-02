@@ -2,6 +2,7 @@
 
 namespace ByJG\MessagingClient\Broker;
 
+use ByJG\MessagingClient\Message\Envelope;
 use ByJG\MessagingClient\Message\Message;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
@@ -103,17 +104,17 @@ class RabbitMQBroker implements BrokerInterface
     }
 
 
-    public function publish(Message $message)
+    public function publish(Envelope $envelope)
     {
-        $headers = $message->getHeaders();
+        $headers = $envelope->getMessage()->getHeaders();
         $headers['content_type'] = $headers['content_type'] ?? 'text/plain';
         $headers['delivery_mode'] = $headers['delivery_mode'] ?? AMQPMessage::DELIVERY_MODE_PERSISTENT;
 
-        $queue = clone $message->getQueue();
+        $queue = clone $envelope->getQueue();
 
         list($connection, $channel) = $this->lazyConnect($queue);
 
-        $rabbitMQMessageBody = $message->getBody();
+        $rabbitMQMessageBody = $envelope->getMessage()->getBody();
 
         $rabbitMQMessage = new AMQPMessage($rabbitMQMessageBody, $headers);
 
@@ -133,7 +134,7 @@ class RabbitMQBroker implements BrokerInterface
          * @param \PhpAmqpLib\Message\AMQPMessage $rabbitMQMessage
          */
         $closure = function ($rabbitMQMessage) use ($onReceive, $onError, $queue) {
-            $message = new Message($rabbitMQMessage->body, $queue);
+            $message = new Message($rabbitMQMessage->body);
             $message->withHeaders($rabbitMQMessage->get_properties());
             $message->withHeader('consumer_tag', $rabbitMQMessage->getConsumerTag());
             $message->withHeader('delivery_tag', $rabbitMQMessage->getDeliveryTag());
@@ -143,8 +144,10 @@ class RabbitMQBroker implements BrokerInterface
             $message->withHeader('body_size', $rabbitMQMessage->getBodySize());
             $message->withHeader('message_count', $rabbitMQMessage->getMessageCount());
 
+            $envelope = new Envelope($queue, $message);
+
             try {
-                $result = $onReceive($message);
+                $result = $onReceive($envelope);
                 if (!is_null($result) && (($result & Message::NACK) == Message::NACK)) {
                     // echo "NACK\n";
                     // echo ($result & Message::REQUEUE) == Message::REQUEUE ? "REQUEUE\n" : "NO REQUEUE\n";
@@ -161,7 +164,7 @@ class RabbitMQBroker implements BrokerInterface
                     $currentConnection->close();
                 }
             } catch (\Exception | \Error $ex) {
-                $result = $onError($message, $ex);
+                $result = $onError($envelope, $ex);
                 if (!is_null($result) && (($result & Message::NACK) == Message::NACK)) {
                     $rabbitMQMessage->nack(($result & Message::REQUEUE) == Message::REQUEUE);
                 } else {

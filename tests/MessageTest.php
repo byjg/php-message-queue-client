@@ -8,30 +8,24 @@ class MessageTest extends TestCase
 {
     public function testGetBody()
     {
-        $queue = new Queue("test");
-        $message = new Message("body", $queue);
+        $message = new Message("body");
         $this->assertEquals("body", $message->getBody());
-        $this->assertEquals($queue, $message->getQueue());
         $this->assertEquals([], $message->getHeaders());
     }
 
     public function testGetBodyWithHeaders()
     {
-        $queue = new Queue("test");
-        $message = new Message("body", $queue);
+        $message = new Message("body");
         $message->withHeaders(["key" => "value"]);
         $this->assertEquals("body", $message->getBody());
-        $this->assertEquals($queue, $message->getQueue());
         $this->assertEquals(["key" => "value"], $message->getHeaders());
     }
 
     public function testGetBodyWithHeader()
     {
-        $queue = new Queue("test");
-        $message = new Message("body", $queue);
+        $message = new Message("body");
         $message->withHeader("key", "value");
         $this->assertEquals("body", $message->getBody());
-        $this->assertEquals($queue, $message->getQueue());
         $this->assertEquals(["key" => "value"], $message->getHeaders());
     }
 }

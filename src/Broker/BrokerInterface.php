@@ -2,7 +2,7 @@
 
 namespace ByJG\MessagingClient\Broker;
 
-use ByJG\MessagingClient\Message\Message;
+use ByJG\MessagingClient\Message\Envelope;
 use ByJG\Util\Uri;
 
 interface BrokerInterface
@@ -11,7 +11,7 @@ interface BrokerInterface
 
     public function getConnection();
 
-    public function publish(Message $message);
+    public function publish(Envelope $envelope);
 
     public function consume(Queue $queue, \Closure $onReceive, \Closure $onError, $identification = null);
 }

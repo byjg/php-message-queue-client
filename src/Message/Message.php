@@ -2,8 +2,6 @@
 
 namespace ByJG\MessagingClient\Message;
 
-use ByJG\MessagingClient\Broker\Queue;
-
 class Message
 {
     const ACK     = 0b000;
@@ -13,25 +11,16 @@ class Message
 
     protected $body;
 
-    /** @var Queue */
-    protected $queue;
-
     protected $headers = [];
 
-    public function __construct($body, Queue $queue)
+    public function __construct($body)
     {
         $this->body = $body;
-        $this->queue = $queue;
     }
 
     public function getBody()
     {
         return $this->body;
-    }
-
-    public function getQueue()
-    {
-        return $this->queue;
     }
 
     public function getHeaders()
