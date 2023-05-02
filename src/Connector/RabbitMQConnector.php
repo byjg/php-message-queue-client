@@ -65,8 +65,8 @@ class RabbitMQConnector implements ConnectorInterface
             $dlqProperties = $dlq->getProperties();
             $dlqProperties['x-dead-letter-exchange'] = $dlq->getTopic();
             // $dlqProperties['x-dead-letter-routing-key'] = $routingKey;
-            $dlqProperties['x-message-ttl'] = $dlqProperties['x-message-ttl'] ?? 3600 * 72;
-            $dlqProperties['x-expires'] = $dlqProperties['x-expires'] ?? 3600 * 72 + 1000;
+            $dlqProperties['x-message-ttl'] = $dlqProperties['x-message-ttl'] ?? 3600 * 72*1000;
+            $dlqProperties['x-expires'] = $dlqProperties['x-expires'] ?? 3600 * 72*1000 + 1000;
             $amqpTable = new AMQPTable($dlqProperties);
         }
 
