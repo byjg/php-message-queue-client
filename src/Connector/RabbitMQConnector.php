@@ -5,6 +5,7 @@ namespace ByJG\MessageQueueClient\Connector;
 use ByJG\MessageQueueClient\Envelope;
 use ByJG\MessageQueueClient\Message;
 use PhpAmqpLib\Channel\AMQPChannel;
+use PhpAmqpLib\Connection\AMQPSSLConnection;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Exchange\AMQPExchangeType;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -12,6 +13,11 @@ use PhpAmqpLib\Wire\AMQPTable;
 
 class RabbitMQConnector implements ConnectorInterface
 {
+    public static function schema()
+    {
+        return ["amqp", "amqps"];
+    }
+
     /** @var \ByJG\Util\Uri */
     protected $uri;
 
@@ -21,7 +27,7 @@ class RabbitMQConnector implements ConnectorInterface
     }
 
     /**
-     * @return \PhpAmqpLib\Connection\AMQPStreamConnection
+     * @return \PhpAmqpLib\Connection\AMQPStreamConnection|\PhpAmqpLib\Connection\AMQPSSLConnection
      */
     public function getConnection()
     {
@@ -30,19 +36,45 @@ class RabbitMQConnector implements ConnectorInterface
             $vhost = "/";
         }
 
-        $connection = new AMQPStreamConnection(
-            $this->uri->getHost(),
-            empty($this->uri->getPort()) ? 5672 : $this->uri->getPort(),
-            $this->uri->getUsername(),
-            $this->uri->getPassword(),
-            $vhost
-        );
+        $args = [];
+        if (!empty($this->uri->getQuery())) {
+            parse_str($this->uri->getQuery(), $args);
+        }
+
+        if ($this->uri->getScheme() == "amqps") {
+            $port = 5671;
+            if (empty($args["capath"])) {
+                throw new \InvalidArgumentException("The 'capath' parameter is required for AMQPS");
+            }
+
+            $connection = new AMQPSSLConnection(
+                $this->uri->getHost(),
+                empty($this->uri->getPort()) ? $port : $this->uri->getPort(),
+                $this->uri->getUsername(),
+                $this->uri->getPassword(),
+                $vhost,
+                [
+                    "ssl" => $args
+                ]
+            );
+        } else {
+            $port = 5672;
+
+            $connection = new AMQPStreamConnection(
+                $this->uri->getHost(),
+                empty($this->uri->getPort()) ? $port : $this->uri->getPort(),
+                $this->uri->getUsername(),
+                $this->uri->getPassword(),
+                $vhost
+            );
+        }
+
 
         return $connection;
     }
 
     /**
-     * @param AMQPStreamConnection $connection
+     * @param AMQPStreamConnection|AMQPSSLConnection $connection
      * @param Queue $queue
      * @return AMQPChannel
      */

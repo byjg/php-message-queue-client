@@ -15,12 +15,16 @@ class ConnectorFactory
      * @param string $class
      * @return void
      */
-    public static function registerConnector($protocol, $class)
+    public static function registerConnector($class)
     {
-        if (!class_exists($class, true)) {
-            throw new InvalidClassException('Class not found!');
+        if (!in_array(ConnectorInterface::class, class_implements($class))) {
+            throw new InvalidClassException('Class not implements ConnectorInterface!');
         }
-        self::$config[$protocol] = $class;
+
+        $protocolList = $class::schema();
+        foreach ((array)$protocolList as $item) {
+            self::$config[$item] = $class;
+        }
     }
 
     /**

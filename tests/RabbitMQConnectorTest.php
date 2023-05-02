@@ -1,5 +1,6 @@
 <?php
 
+use ByJG\MessageQueueClient\Connector\ConnectorFactory;
 use ByJG\MessageQueueClient\Connector\ConnectorInterface;
 use ByJG\MessageQueueClient\Connector\Queue;
 use ByJG\MessageQueueClient\Connector\RabbitMQConnector;
@@ -15,8 +16,8 @@ class RabbitMQConnectorTest extends TestCase
 
     public function setUp(): void
     {
-        $this->connector = new RabbitMQConnector();
-        $this->connector->setUp(new Uri("amqp://guest:guest@localhost:5672/"));
+        ConnectorFactory::registerConnector(RabbitMQConnector::class);
+        $this->connector = ConnectorFactory::create("amqp://guest:guest@localhost:5672/");
     }
 
     public function testClearQueues()

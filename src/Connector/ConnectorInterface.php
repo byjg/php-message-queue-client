@@ -7,6 +7,8 @@ use ByJG\Util\Uri;
 
 interface ConnectorInterface
 {
+    public static function schema();
+
     public function setUp(Uri $uri);
 
     public function getConnection();

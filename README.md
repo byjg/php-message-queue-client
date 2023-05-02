@@ -40,7 +40,7 @@ This is a simple client to publish and consumes messages from a Message Queue se
 ```php
 <?php
 // Register the connector and associate with a scheme
-ConnectorFactory::registerConnector('amqp', RabbitMQConnector::class);
+ConnectorFactory::registerConnector(RabbitMQConnector::class);
 
 // Create a connector
 $connector = ConnectorFactory::create(new Uri("amqp://$user:$pass@$host:$port/$vhost"));
@@ -61,7 +61,7 @@ $connector->publish(new Envelope($queue, $message));
 ```php
 <?php
 // Register the connector and associate with a scheme
-ConnectorFactory::registerConnector('amqp', RabbitMQConnector::class);
+ConnectorFactory::registerConnector(RabbitMQConnector::class);
 
 // Create a connector
 $connector = ConnectorFactory::create(new Uri("amqp://$user:$pass@$host:$port/$vhost"));
@@ -143,6 +143,13 @@ Some of them are used by the RabbitMQConnector by setting some default values:
 * `Queue::withProperty('x-expires')` - Only affects dead letter queues. Set the time to live of the queue in milliseconds. Default 3 days.
 * `Message::withHeader('content_type')` - Set the content type of the message. Default is text/plain.
 * `Message::withHeader('delivery_mode')` - Set the delivery mode of the message. Default is 2 (persistent).
+
+Protocols:
+
+| Protocol | URI Example                                         | Notes |
+| -------- | --------------------------------------------------- | ----- |
+| AMQP     | amqp://user:pass@host:port/vhost                    | Default port: 5672.     |
+| AMQPS    | amqps://user:pass@host:port/vhost?arg1=...&args=... | Default port: 5671. Args: capath*, local_cert, local_pk, verify_peer, verify_peer_name |
 
 ----
 [Open source ByJG](http://opensource.byjg.com)
