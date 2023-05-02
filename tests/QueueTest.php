@@ -11,6 +11,7 @@ class QueueTest extends TestCase
         $this->assertEquals("test", $queue->getName());
         $this->assertNull($queue->getTopic());
         $this->assertEquals([], $queue->getProperties());
+        $this->assertNull($queue->getDeadLetterQueue());
     }
 
     public function testGetQueueNameWithTopic()
@@ -19,6 +20,7 @@ class QueueTest extends TestCase
         $this->assertEquals("test", $queue->getName());
         $this->assertEquals("topic", $queue->getTopic());
         $this->assertEquals([], $queue->getProperties());
+        $this->assertNull($queue->getDeadLetterQueue());
     }
 
     public function testGetQueueNameWithTopicAndProperties()
@@ -28,5 +30,14 @@ class QueueTest extends TestCase
         $this->assertEquals("test", $queue->getName());
         $this->assertEquals("topic", $queue->getTopic());
         $this->assertEquals(["key" => "value"], $queue->getProperties());
+        $this->assertNull($queue->getDeadLetterQueue());
+    }
+
+    public function testGetDeadLetterQueueWithQueue()
+    {
+        $queue = new Queue("test");
+        $dlq = new Queue("dlq");
+        $queue->withDeadLetterQueue($dlq);
+        $this->assertEquals($dlq, $queue->getDeadLetterQueue());
     }
 }

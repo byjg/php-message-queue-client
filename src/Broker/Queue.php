@@ -10,6 +10,9 @@ class Queue
 
     protected $properties = [];
 
+    /** @var Queue */
+    protected $deadLetterQueue = null;
+
     public function __construct($queue, $topic = null)
     {
         $this->queue = $queue;
@@ -47,5 +50,16 @@ class Queue
     public function getProperties()
     {
         return $this->properties;
+    }
+
+    public function getDeadLetterQueue()
+    {
+        return $this->deadLetterQueue;
+    }
+
+    public function withDeadLetterQueue(Queue $deadLetterQueue)
+    {
+        $this->deadLetterQueue = $deadLetterQueue;
+        return $this;
     }
 }

@@ -2,13 +2,12 @@
 
 namespace ByJG\MessagingClient\Broker;
 
-use ByJG\MessagingClient\Exception\StopBrokerException;
 use ByJG\MessagingClient\Message\Message;
-use Exception;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Exchange\AMQPExchangeType;
 use PhpAmqpLib\Message\AMQPMessage;
+use PhpAmqpLib\Wire\AMQPTable;
 
 class RabbitMQBroker implements BrokerInterface
 {
@@ -23,7 +22,7 @@ class RabbitMQBroker implements BrokerInterface
     /**
      * @return \PhpAmqpLib\Connection\AMQPStreamConnection
      */
-    protected function connect()
+    public function getConnection()
     {
         $vhost = trim($this->uri->getPath(), "/");
         if (empty($vhost)) {
@@ -51,7 +50,24 @@ class RabbitMQBroker implements BrokerInterface
         $queue->withTopic($queue->getTopic() ?? $queue->getName());
         $properties = $queue->getProperties();
         $properties['exchange_type'] = $properties['exchange_type'] ?? AMQPExchangeType::DIRECT;
+        $routingKey = $properties['_x_routing_key'] ?? $queue->getName();
+        unset($properties['_x_routing_key']);
         $queue->withProperties($properties);
+
+        $amqpTable = [];
+        $dlq = $queue->getDeadLetterQueue();
+        if (!empty($dlq)) {
+            $dlq->withProperty('exchange_type', AMQPExchangeType::FANOUT);
+            $channelDlq = $this->createQueue($connection, $dlq);
+            $channelDlq->close();
+
+            $dlqProperties = $dlq->getProperties();
+            $dlqProperties['x-dead-letter-exchange'] = $dlq->getTopic();
+            // $dlqProperties['x-dead-letter-routing-key'] = $routingKey;
+            $dlqProperties['x-message-ttl'] = $dlqProperties['x-message-ttl'] ?? 3600 * 72;
+            $dlqProperties['x-expires'] = $dlqProperties['x-expires'] ?? 3600 * 72 + 1000;
+            $amqpTable = new AMQPTable($dlqProperties);
+        }
 
         $channel = $connection->channel();
 
@@ -62,7 +78,7 @@ class RabbitMQBroker implements BrokerInterface
             exclusive: false // the queue can be accessed in other channels
             auto_delete: false //the queue won't be deleted once the channel is closed.
         */
-        $channel->queue_declare($queue->getName(), false, true, false, false, false);
+        $channel->queue_declare($queue->getName(), false, true, false, false, false, $amqpTable);
 
         /*
             name: $exchange
@@ -73,14 +89,14 @@ class RabbitMQBroker implements BrokerInterface
         */
         $channel->exchange_declare($queue->getTopic(), $properties['exchange_type'], false, true, false);
 
-        $channel->queue_bind($queue->getName(), $queue->getTopic(), $queue->getName());
+        $channel->queue_bind($queue->getName(), $queue->getTopic(), $routingKey);
 
         return $channel;
     }
 
     protected function lazyConnect(Queue &$queue)
     {
-        $connection = $this->connect();
+        $connection = $this->getConnection();
         $channel = $this->createQueue($connection, $queue);
 
         return [$connection, $channel];
@@ -118,24 +134,31 @@ class RabbitMQBroker implements BrokerInterface
          */
         $closure = function ($rabbitMQMessage) use ($onReceive, $onError, $queue) {
             $message = new Message($rabbitMQMessage->body, $queue);
-            $message->withHeaders(array_merge($rabbitMQMessage->get_properties(), [
-                "content_type" => $rabbitMQMessage->getContentEncoding(),
-                "consumer_tag" => $rabbitMQMessage->getConsumerTag(),
-            ]));
+            $message->withHeaders($rabbitMQMessage->get_properties());
+            $message->withHeader('consumer_tag', $rabbitMQMessage->getConsumerTag());
+            $message->withHeader('delivery_tag', $rabbitMQMessage->getDeliveryTag());
+            $message->withHeader('redelivered', $rabbitMQMessage->isRedelivered());
+            $message->withHeader('exchange', $rabbitMQMessage->getExchange());
+            $message->withHeader('routing_key', $rabbitMQMessage->getRoutingKey());
+            $message->withHeader('body_size', $rabbitMQMessage->getBodySize());
+            $message->withHeader('message_count', $rabbitMQMessage->getMessageCount());
 
             try {
                 $result = $onReceive($message);
                 if (!is_null($result) && (($result & Message::NACK) == Message::NACK)) {
-                    echo "NACK\n";
-                    echo ($result & Message::REQUEUE) == Message::REQUEUE ? "REQUEUE\n" : "NO REQUEUE\n";
+                    // echo "NACK\n";
+                    // echo ($result & Message::REQUEUE) == Message::REQUEUE ? "REQUEUE\n" : "NO REQUEUE\n";
                     $rabbitMQMessage->nack(($result & Message::REQUEUE) == Message::REQUEUE);
                 } else {
-                    echo "ACK\n";
+                    // echo "ACK\n";
                     $rabbitMQMessage->ack();
                 }
 
                 if (($result & Message::EXIT) == Message::EXIT) {
                     $rabbitMQMessage->getChannel()->basic_cancel($rabbitMQMessage->getConsumerTag());
+                    $currentConnection = $rabbitMQMessage->getChannel()->getConnection();
+                    $rabbitMQMessage->getChannel()->close();
+                    $currentConnection->close();
                 }
             } catch (\Exception | \Error $ex) {
                 $result = $onError($message, $ex);

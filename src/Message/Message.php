@@ -18,9 +18,6 @@ class Message
 
     protected $headers = [];
 
-    /** @var Queue */
-    protected $deadLetterQueue = null;
-
     public function __construct($body, Queue $queue)
     {
         $this->body = $body;
@@ -51,17 +48,6 @@ class Message
     public function withHeaders(array $headers)
     {
         $this->headers = $headers;
-        return $this;
-    }
-
-    public function getDeadLetterQueue()
-    {
-        return $this->deadLetterQueue;
-    }
-
-    public function withDeadLetterQueue(Queue $deadLetterQueue)
-    {
-        $this->deadLetterQueue = $deadLetterQueue;
         return $this;
     }
 }

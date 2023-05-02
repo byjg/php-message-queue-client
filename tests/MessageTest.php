@@ -13,7 +13,6 @@ class MessageTest extends TestCase
         $this->assertEquals("body", $message->getBody());
         $this->assertEquals($queue, $message->getQueue());
         $this->assertEquals([], $message->getHeaders());
-        $this->assertNull($message->getDeadLetterQueue());
     }
 
     public function testGetBodyWithHeaders()
@@ -24,7 +23,6 @@ class MessageTest extends TestCase
         $this->assertEquals("body", $message->getBody());
         $this->assertEquals($queue, $message->getQueue());
         $this->assertEquals(["key" => "value"], $message->getHeaders());
-        $this->assertNull($message->getDeadLetterQueue());
     }
 
     public function testGetBodyWithHeader()
@@ -35,15 +33,5 @@ class MessageTest extends TestCase
         $this->assertEquals("body", $message->getBody());
         $this->assertEquals($queue, $message->getQueue());
         $this->assertEquals(["key" => "value"], $message->getHeaders());
-        $this->assertNull($message->getDeadLetterQueue());
-    }
-
-    public function testGetDeadLetterQueueWithQueue()
-    {
-        $queue = new Queue("test");
-        $dlq = new Queue("dlq");
-        $message = new Message("body", $queue);
-        $message->withDeadLetterQueue($dlq);
-        $this->assertEquals($dlq, $message->getDeadLetterQueue());
     }
 }
