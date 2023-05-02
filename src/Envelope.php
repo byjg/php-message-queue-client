@@ -1,8 +1,8 @@
 <?php
 
-namespace ByJG\MessagingClient;
+namespace ByJG\MessageQueueClient;
 
-use ByJG\MessagingClient\Broker\Queue;
+use ByJG\MessageQueueClient\Connector\Queue;
 
 class Envelope
 {

@@ -1,16 +1,16 @@
 <?php
 
-namespace ByJG\MessagingClient\Broker;
+namespace ByJG\MessageQueueClient\Connector;
 
-use ByJG\MessagingClient\Envelope;
-use ByJG\MessagingClient\Message;
+use ByJG\MessageQueueClient\Envelope;
+use ByJG\MessageQueueClient\Message;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Exchange\AMQPExchangeType;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
 
-class RabbitMQBroker implements BrokerInterface
+class RabbitMQConnector implements ConnectorInterface
 {
     /** @var \ByJG\Util\Uri */
     protected $uri;

@@ -1,6 +1,6 @@
 <?php
 
-namespace ByJG\MessagingClient\Exception;
+namespace ByJG\MessageQueueClient\Exception;
 
 class ProtocolNotRegisteredException extends \Exception
 {

@@ -1,6 +1,6 @@
 <?php
 
-use ByJG\MessagingClient\Broker\Queue;
+use ByJG\MessageQueueClient\Connector\Queue;
 use PHPUnit\Framework\TestCase;
 
 class QueueTest extends TestCase

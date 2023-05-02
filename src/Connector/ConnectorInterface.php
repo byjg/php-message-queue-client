@@ -1,11 +1,11 @@
 <?php
 
-namespace ByJG\MessagingClient\Broker;
+namespace ByJG\MessageQueueClient\Connector;
 
-use ByJG\MessagingClient\Envelope;
+use ByJG\MessageQueueClient\Envelope;
 use ByJG\Util\Uri;
 
-interface BrokerInterface
+interface ConnectorInterface
 {
     public function setUp(Uri $uri);
 

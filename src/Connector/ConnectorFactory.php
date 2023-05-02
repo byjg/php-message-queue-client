@@ -1,12 +1,12 @@
 <?php
 
-namespace ByJG\MessagingClient\Broker;
+namespace ByJG\MessageQueueClient\Connector;
 
-use ByJG\MessagingClient\Exception\InvalidClassException;
-use ByJG\MessagingClient\Exception\ProtocolNotRegisteredException;
+use ByJG\MessageQueueClient\Exception\InvalidClassException;
+use ByJG\MessageQueueClient\Exception\ProtocolNotRegisteredException;
 use ByJG\Util\Uri;
 
-class BrokerFactory
+class ConnectorFactory
 {
     private static $config = [];
 
@@ -15,7 +15,7 @@ class BrokerFactory
      * @param string $class
      * @return void
      */
-    public static function registerBroker($protocol, $class)
+    public static function registerConnector($protocol, $class)
     {
         if (!class_exists($class, true)) {
             throw new InvalidClassException('Class not found!');
@@ -25,9 +25,9 @@ class BrokerFactory
 
     /**
      * @param Uri|string $connection
-     * @return BrokerInterface
+     * @return ConnectorInterface
      */
-    public static function create($connection): BrokerInterface
+    public static function create($connection): ConnectorInterface
     {
         if ($connection instanceof Uri) {
             $uri = $connection;

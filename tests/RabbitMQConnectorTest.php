@@ -1,29 +1,29 @@
 <?php
 
-use ByJG\MessagingClient\Broker\BrokerInterface;
-use ByJG\MessagingClient\Broker\Queue;
-use ByJG\MessagingClient\Broker\RabbitMQBroker;
-use ByJG\MessagingClient\Envelope;
-use ByJG\MessagingClient\Message;
+use ByJG\MessageQueueClient\Connector\ConnectorInterface;
+use ByJG\MessageQueueClient\Connector\Queue;
+use ByJG\MessageQueueClient\Connector\RabbitMQConnector;
+use ByJG\MessageQueueClient\Envelope;
+use ByJG\MessageQueueClient\Message;
 use ByJG\Util\Uri;
 use PHPUnit\Framework\TestCase;
 
-class RabbitMQBrokerTest extends TestCase
+class RabbitMQConnectorTest extends TestCase
 {
-    /** @var BrokerInterface */
-    protected $broker;
+    /** @var ConnectorInterface */
+    protected $connector;
 
     public function setUp(): void
     {
-        $this->broker = new RabbitMQBroker();
-        $this->broker->setUp(new Uri("amqp://guest:guest@localhost:5672/"));
+        $this->connector = new RabbitMQConnector();
+        $this->connector->setUp(new Uri("amqp://guest:guest@localhost:5672/"));
     }
 
     public function testClearQueues()
     {
         // We are not using tearDown() because we want to keep the queues for the other tests
 
-        $connection = $this->broker->getConnection();
+        $connection = $this->connector->getConnection();
         $channel = $connection->channel();
         $channel->queue_delete("test");
         $channel->exchange_delete("test");
@@ -42,9 +42,9 @@ class RabbitMQBrokerTest extends TestCase
 
         $queue = new Queue("test");
         $message = new Message("body");
-        $this->broker->publish(new Envelope($queue, $message));
+        $this->connector->publish(new Envelope($queue, $message));
 
-        $this->broker->consume($queue, function (Envelope $envelope) {
+        $this->connector->consume($queue, function (Envelope $envelope) {
             $this->assertEquals("body", $envelope->getMessage()->getBody());
             $this->assertEquals("test", $envelope->getQueue()->getName());
             $this->assertEquals("test", $envelope->getQueue()->getTopic());
@@ -72,9 +72,9 @@ class RabbitMQBrokerTest extends TestCase
     {
         $queue = new Queue("test");
         $message = new Message("body_requeue");
-        $this->broker->publish(new Envelope($queue, $message));
+        $this->connector->publish(new Envelope($queue, $message));
 
-        $this->broker->consume($queue, function (Envelope $envelope) {
+        $this->connector->consume($queue, function (Envelope $envelope) {
             $this->assertEquals("body_requeue", $envelope->getMessage()->getBody());
             $this->assertEquals("test", $envelope->getQueue()->getName());
             $this->assertEquals("test", $envelope->getQueue()->getTopic());
@@ -102,7 +102,7 @@ class RabbitMQBrokerTest extends TestCase
     {
         $queue = new Queue("test");
 
-        $this->broker->consume($queue, function (Envelope $envelope) {
+        $this->connector->consume($queue, function (Envelope $envelope) {
             $this->assertEquals("body_requeue", $envelope->getMessage()->getBody());
             $this->assertEquals("test", $envelope->getQueue()->getName());
             $this->assertEquals("test", $envelope->getQueue()->getTopic());
@@ -134,9 +134,9 @@ class RabbitMQBrokerTest extends TestCase
 
         // Post and consume a message
         $message = new Message("bodydlq");
-        $this->broker->publish(new Envelope($queue, $message));
+        $this->connector->publish(new Envelope($queue, $message));
 
-        $this->broker->consume($queue, function (Envelope $envelope) {
+        $this->connector->consume($queue, function (Envelope $envelope) {
             $this->assertEquals("bodydlq", $envelope->getMessage()->getBody());
             $this->assertEquals("test2", $envelope->getQueue()->getName());
             $this->assertEquals("test2", $envelope->getQueue()->getTopic());
@@ -161,9 +161,9 @@ class RabbitMQBrokerTest extends TestCase
 
         // Post and reject  a message (NACK, to send to the DLQ)
         $message = new Message("bodydlq_2");
-        $this->broker->publish(new Envelope($queue, $message));
+        $this->connector->publish(new Envelope($queue, $message));
 
-        $this->broker->consume($queue, function (Envelope $envelope) {
+        $this->connector->consume($queue, function (Envelope $envelope) {
             $this->assertEquals("bodydlq_2", $envelope->getMessage()->getBody());
             $this->assertEquals("test2", $envelope->getQueue()->getName());
             $this->assertEquals("test2", $envelope->getQueue()->getTopic());
@@ -187,7 +187,7 @@ class RabbitMQBrokerTest extends TestCase
         });
 
         // Consume the DLQ
-        $this->broker->consume($dlqQueue, function (Envelope $envelope) {
+        $this->connector->consume($dlqQueue, function (Envelope $envelope) {
             $this->assertEquals("bodydlq_2", $envelope->getMessage()->getBody());
             $this->assertEquals("dlq_test2", $envelope->getQueue()->getName());
             $this->assertEquals("dlq_test2", $envelope->getQueue()->getTopic());

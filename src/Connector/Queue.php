@@ -1,6 +1,6 @@
 <?php
 
-namespace ByJG\MessagingClient\Broker;
+namespace ByJG\MessageQueueClient\Connector;
 
 class Queue
 {

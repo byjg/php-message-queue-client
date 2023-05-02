@@ -1,9 +1,9 @@
 {
-  "name": "byjg/messagingclient",
+  "name": "byjg/message-queue-client",
   "description": "A lightweight messaging client to publish and consume messages from messaging servers like Amazon SQS, Amazon SNS, Google PubSub, RabbitMQ, Kafka, etc.",
   "autoload": {
     "psr-4": {
-      "ByJG\\MessagingClient\\": "src/"
+      "ByJG\\MessageQueueClient\\": "src/"
     }
   },
   "prefer-stable": true,
