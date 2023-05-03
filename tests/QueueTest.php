@@ -11,7 +11,7 @@ class QueueTest extends TestCase
         $pipe = new Pipe("test");
         $this->assertEquals("test", $pipe->getName());
         $this->assertEquals([], $pipe->getProperties());
-        $this->assertNull($pipe->getDeadLetterQueue());
+        $this->assertNull($pipe->getDeadLetter());
     }
 
     public function testGetQueueNameWithTopic()
@@ -19,7 +19,7 @@ class QueueTest extends TestCase
         $pipe = new Pipe("test", "topic");
         $this->assertEquals("test", $pipe->getName());
         $this->assertEquals([], $pipe->getProperties());
-        $this->assertNull($pipe->getDeadLetterQueue());
+        $this->assertNull($pipe->getDeadLetter());
     }
 
     public function testGetQueueNameWithTopicAndProperties()
@@ -28,14 +28,14 @@ class QueueTest extends TestCase
         $pipe->withProperties(["key" => "value"]);
         $this->assertEquals("test", $pipe->getName());
         $this->assertEquals(["key" => "value"], $pipe->getProperties());
-        $this->assertNull($pipe->getDeadLetterQueue());
+        $this->assertNull($pipe->getDeadLetter());
     }
 
-    public function testGetDeadLetterQueueWithQueue()
+    public function testGetDeadLetterWithQueue()
     {
         $pipe = new Pipe("test");
         $dlq = new Pipe("dlq");
-        $pipe->withDeadLetterQueue($dlq);
-        $this->assertEquals($dlq, $pipe->getDeadLetterQueue());
+        $pipe->withDeadLetter($dlq);
+        $this->assertEquals($dlq, $pipe->getDeadLetter());
     }
 }

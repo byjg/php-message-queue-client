@@ -90,7 +90,7 @@ class RabbitMQConnector implements ConnectorInterface
         $pipe->setPropertyIfNull(self::ROUTING_KEY, $pipe->getName());
 
         $amqpTable = [];
-        $dlq = $pipe->getDeadLetterQueue();
+        $dlq = $pipe->getDeadLetter();
         if (!empty($dlq)) {
             $dlq->withProperty('exchange_type', AMQPExchangeType::FANOUT);
             $channelDlq = $this->createQueue($connection, $dlq);

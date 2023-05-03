@@ -9,7 +9,7 @@ class Pipe
     protected $properties = [];
 
     /** @var Pipe */
-    protected $deadLetterQueue = null;
+    protected $deadLetter = null;
 
     public function __construct($pipe)
     {
@@ -63,14 +63,14 @@ class Pipe
         return $this->properties;
     }
 
-    public function getDeadLetterQueue()
+    public function getDeadLetter()
     {
-        return $this->deadLetterQueue;
+        return $this->deadLetter;
     }
 
-    public function withDeadLetterQueue(Pipe $deadLetterQueue)
+    public function withDeadLetter(Pipe $deadLetter)
     {
-        $this->deadLetterQueue = $deadLetterQueue;
+        $this->deadLetter = $deadLetter;
         return $this;
     }
 }

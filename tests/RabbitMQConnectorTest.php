@@ -138,7 +138,7 @@ class RabbitMQConnectorTest extends TestCase
     {
         $pipe = new Pipe("test2");
         $dlqQueue = new Pipe("dlq_test2");
-        $pipe->withDeadLetterQueue($dlqQueue);
+        $pipe->withDeadLetter($dlqQueue);
 
         // Post and consume a message
         $message = new Message("bodydlq");

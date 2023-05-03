@@ -47,7 +47,7 @@ $connector = ConnectorFactory::create(new Uri("amqp://$user:$pass@$host:$port/$v
 
 // Create a queue
 $pipe = new Pipe("test");
-$pipe->withDeadLetterQueue(new Pipe("dlq_test"));
+$pipe->withDeadLetter(new Pipe("dlq_test"));
 
 // Create a message
 $message = new Message("Hello World");
@@ -68,7 +68,7 @@ $connector = ConnectorFactory::create(new Uri("amqp://$user:$pass@$host:$port/$v
 
 // Create a queue
 $pipe = new Pipe("test");
-$pipe->withDeadLetterQueue(new Pipe("dlq_test"));
+$pipe->withDeadLetter(new Pipe("dlq_test"));
 
 // Connect to the queue and wait to consume the message
 $connector->consume(
