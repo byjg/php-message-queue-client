@@ -14,7 +14,7 @@ This is a simple client to publish and consumes messages from a Message Queue se
 │                 │                  │                        │
 │                 │                  │                        │
 │                 │                  │   ┌─────────────────┐  │
-│                 │   publish()      │   │      Queue      │  │
+│                 │   publish()      │   │      Pipe       │  │
 │                 ├─────────────────▶│   └─────────────────┘  │
 │                 │                  │   ┌─────────────────┐  │
 │                 │                  │   │     Message     │  │
@@ -25,7 +25,7 @@ This is a simple client to publish and consumes messages from a Message Queue se
 │                 │
 │                 │
 │                 │       consume()     ┌─────────────────┐
-│                 │◀────────────────────│      Queue      │
+│                 │◀────────────────────│      Pipe       │
 │                 │                     └─────────────────┘
 │                 │
 │                 │
@@ -46,14 +46,14 @@ ConnectorFactory::registerConnector(RabbitMQConnector::class);
 $connector = ConnectorFactory::create(new Uri("amqp://$user:$pass@$host:$port/$vhost"));
 
 // Create a queue
-$queue = new Queue("test");
-$queue->withDeadLetterQueue(new Queue("dlq_test"));
+$pipe = new Pipe("test");
+$pipe->withDeadLetterQueue(new Pipe("dlq_test"));
 
 // Create a message
 $message = new Message("Hello World");
 
 // Publish the message into the queue
-$connector->publish(new Envelope($queue, $message));
+$connector->publish(new Envelope($pipe, $message));
 ```
 
 ### Consume
@@ -67,12 +67,12 @@ ConnectorFactory::registerConnector(RabbitMQConnector::class);
 $connector = ConnectorFactory::create(new Uri("amqp://$user:$pass@$host:$port/$vhost"));
 
 // Create a queue
-$queue = new Queue("test");
-$queue->withDeadLetterQueue(new Queue("dlq_test"));
+$pipe = new Pipe("test");
+$pipe->withDeadLetterQueue(new Pipe("dlq_test"));
 
 // Connect to the queue and wait to consume the message
 $connector->consume(
-    $queue,                                 // Queue name
+    $pipe,                                 // Queue name
     function (Envelope $envelope) {         // Callback function to process the message
         echo "Process the message";
         echo $envelope->getMessage()->getBody();
@@ -114,7 +114,7 @@ interface ConnectorInterface
 
     public function publish(Envelope $envelope);
 
-    public function consume(Queue $queue, \Closure $onReceive, \Closure $onError, $identification = null);
+    public function consume(Pipe $pipe, \Closure $onReceive, \Closure $onError, $identification = null);
 }
 ```
 
@@ -135,12 +135,12 @@ If you use an existing Queue you might get the error:
 PHP Fatal error:  Uncaught PhpAmqpLib\Exception\AMQPProtocolChannelException: PRECONDITION_FAILED - Existing queue 'test' declared with other arguments in AMQPChannel.php:224
 ```
 
-You can change the behavior of the connection by using the `Queue::withProperty()` and `Message::withHeader()` methods.
+You can change the behavior of the connection by using the `Pipe::withProperty()` and `Message::withHeader()` methods.
 Some of them are used by the RabbitMQConnector by setting some default values:
 
-* `Queue::withProperty('_x_routing_key')` - Set the routing key. Default is the queue name.
-* `Queue::withProperty('x-message-ttl')` - Only affects dead letter queues. Set the time to live of the message in milliseconds. Default 3 days.
-* `Queue::withProperty('x-expires')` - Only affects dead letter queues. Set the time to live of the queue in milliseconds. Default 3 days.
+* `Pipe::withProperty('_x_routing_key')` - Set the routing key. Default is the queue name.
+* `Pipe::withProperty('x-message-ttl')` - Only affects dead letter queues. Set the time to live of the message in milliseconds. Default 3 days.
+* `Pipe::withProperty('x-expires')` - Only affects dead letter queues. Set the time to live of the queue in milliseconds. Default 3 days.
 * `Message::withHeader('content_type')` - Set the content type of the message. Default is text/plain.
 * `Message::withHeader('delivery_mode')` - Set the delivery mode of the message. Default is 2 (persistent).
 

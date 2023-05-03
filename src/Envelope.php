@@ -2,20 +2,20 @@
 
 namespace ByJG\MessageQueueClient;
 
-use ByJG\MessageQueueClient\Connector\Queue;
+use ByJG\MessageQueueClient\Connector\Pipe;
 
 class Envelope
 {
     /** @var Message */
     protected $message;
 
-    /** @var Queue */
-    protected $queue;
+    /** @var Pipe */
+    protected $pipe;
 
-    public function __construct(Queue $queue, Message $message)
+    public function __construct(Pipe $pipe, Message $message)
     {
         $this->message = $message;
-        $this->queue = $queue;
+        $this->pipe = $pipe;
     }
 
     public function getMessage(): Message
@@ -23,8 +23,8 @@ class Envelope
         return $this->message;
     }
 
-    public function getQueue(): Queue
+    public function getPipe(): Pipe
     {
-        return $this->queue;
+        return $this->pipe;
     }
 }

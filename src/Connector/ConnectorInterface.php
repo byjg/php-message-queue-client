@@ -15,5 +15,5 @@ interface ConnectorInterface
 
     public function publish(Envelope $envelope);
 
-    public function consume(Queue $queue, \Closure $onReceive, \Closure $onError, $identification = null);
+    public function consume(Pipe $pipe, \Closure $onReceive, \Closure $onError, $identification = null);
 }

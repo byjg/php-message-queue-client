@@ -2,7 +2,8 @@
 
 use ByJG\MessageQueueClient\Connector\ConnectorFactory;
 use ByJG\MessageQueueClient\Connector\ConnectorInterface;
-use ByJG\MessageQueueClient\Connector\Queue;
+use ByJG\MessageQueueClient\Connector\Pipe;
+use ByJG\MessageQueueClient\Connector\RabbitMQBroker;
 use ByJG\MessageQueueClient\Connector\RabbitMQConnector;
 use ByJG\MessageQueueClient\Envelope;
 use ByJG\MessageQueueClient\Message;
@@ -41,14 +42,14 @@ class RabbitMQConnectorTest extends TestCase
     public function testPublishConsume()
     {
 
-        $queue = new Queue("test");
+        $pipe = new Pipe("test");
         $message = new Message("body");
-        $this->connector->publish(new Envelope($queue, $message));
+        $this->connector->publish(new Envelope($pipe, $message));
 
-        $this->connector->consume($queue, function (Envelope $envelope) {
+        $this->connector->consume($pipe, function (Envelope $envelope) {
             $this->assertEquals("body", $envelope->getMessage()->getBody());
-            $this->assertEquals("test", $envelope->getQueue()->getName());
-            $this->assertEquals("test", $envelope->getQueue()->getTopic());
+            $this->assertEquals("test", $envelope->getPipe()->getName());
+            $this->assertEquals("test", $envelope->getPipe()->getProperty(RabbitMQConnector::EXCHANGE));
             $this->assertEquals([
                 'content_type' => 'text/plain',
                 'delivery_mode' => 2,
@@ -62,7 +63,9 @@ class RabbitMQConnectorTest extends TestCase
             ], $envelope->getMessage()->getHeaders());
             $this->assertEquals([
                 "exchange_type" => "direct",
-            ], $envelope->getQueue()->getProperties());
+                '_x_exchange' => 'test',
+                '_x_routing_key' => 'test',
+            ], $envelope->getPipe()->getProperties());
             return Message::ACK | Message::EXIT;
         }, function (Envelope $envelope, $ex) {
             throw $ex;
@@ -71,14 +74,14 @@ class RabbitMQConnectorTest extends TestCase
 
     public function testPublishConsumeRequeue()
     {
-        $queue = new Queue("test");
+        $pipe = new Pipe("test");
         $message = new Message("body_requeue");
-        $this->connector->publish(new Envelope($queue, $message));
+        $this->connector->publish(new Envelope($pipe, $message));
 
-        $this->connector->consume($queue, function (Envelope $envelope) {
+        $this->connector->consume($pipe, function (Envelope $envelope) {
             $this->assertEquals("body_requeue", $envelope->getMessage()->getBody());
-            $this->assertEquals("test", $envelope->getQueue()->getName());
-            $this->assertEquals("test", $envelope->getQueue()->getTopic());
+            $this->assertEquals("test", $envelope->getPipe()->getName());
+            $this->assertEquals("test", $envelope->getPipe()->getProperty(RabbitMQConnector::EXCHANGE));
             $this->assertEquals([
                 'content_type' => 'text/plain',
                 'delivery_mode' => 2,
@@ -92,7 +95,9 @@ class RabbitMQConnectorTest extends TestCase
             ], $envelope->getMessage()->getHeaders());
             $this->assertEquals([
                 "exchange_type" => "direct",
-            ], $envelope->getQueue()->getProperties());
+                '_x_exchange' => 'test',
+                '_x_routing_key' => 'test',
+            ], $envelope->getPipe()->getProperties());
             return Message::REQUEUE | Message::EXIT;
         }, function (Envelope $envelope, $ex) {
             throw $ex;
@@ -101,12 +106,12 @@ class RabbitMQConnectorTest extends TestCase
 
     public function testConsumeMessageRequeued()
     {
-        $queue = new Queue("test");
+        $pipe = new Pipe("test");
 
-        $this->connector->consume($queue, function (Envelope $envelope) {
+        $this->connector->consume($pipe, function (Envelope $envelope) {
             $this->assertEquals("body_requeue", $envelope->getMessage()->getBody());
-            $this->assertEquals("test", $envelope->getQueue()->getName());
-            $this->assertEquals("test", $envelope->getQueue()->getTopic());
+            $this->assertEquals("test", $envelope->getPipe()->getName());
+            $this->assertEquals("test", $envelope->getPipe()->getProperty(RabbitMQConnector::EXCHANGE));
             $this->assertEquals([
                 'content_type' => 'text/plain',
                 'delivery_mode' => 2,
@@ -120,7 +125,9 @@ class RabbitMQConnectorTest extends TestCase
             ], $envelope->getMessage()->getHeaders());
             $this->assertEquals([
                 "exchange_type" => "direct",
-            ], $envelope->getQueue()->getProperties());
+                '_x_exchange' => 'test',
+                '_x_routing_key' => 'test',
+                        ], $envelope->getPipe()->getProperties());
             return Message::ACK | Message::EXIT;
         }, function (Envelope $envelope, $ex) {
             throw $ex;
@@ -129,18 +136,18 @@ class RabbitMQConnectorTest extends TestCase
 
     public function testPublishConsumeWithDlq()
     {
-        $queue = new Queue("test2");
-        $dlqQueue = new Queue("dlq_test2");
-        $queue->withDeadLetterQueue($dlqQueue);
+        $pipe = new Pipe("test2");
+        $dlqQueue = new Pipe("dlq_test2");
+        $pipe->withDeadLetterQueue($dlqQueue);
 
         // Post and consume a message
         $message = new Message("bodydlq");
-        $this->connector->publish(new Envelope($queue, $message));
+        $this->connector->publish(new Envelope($pipe, $message));
 
-        $this->connector->consume($queue, function (Envelope $envelope) {
+        $this->connector->consume($pipe, function (Envelope $envelope) {
             $this->assertEquals("bodydlq", $envelope->getMessage()->getBody());
-            $this->assertEquals("test2", $envelope->getQueue()->getName());
-            $this->assertEquals("test2", $envelope->getQueue()->getTopic());
+            $this->assertEquals("test2", $envelope->getPipe()->getName());
+            $this->assertEquals("test2", $envelope->getPipe()->getProperty(RabbitMQConnector::EXCHANGE));
             $this->assertEquals([
                 'content_type' => 'text/plain',
                 'delivery_mode' => 2,
@@ -154,7 +161,9 @@ class RabbitMQConnectorTest extends TestCase
             ], $envelope->getMessage()->getHeaders());
             $this->assertEquals([
                 "exchange_type" => "direct",
-            ], $envelope->getQueue()->getProperties());
+                '_x_exchange' => 'test2',
+                '_x_routing_key' => 'test2',
+            ], $envelope->getPipe()->getProperties());
             return Message::ACK | Message::EXIT;
         }, function (Envelope $envelope, $ex) {
             throw $ex;
@@ -162,12 +171,12 @@ class RabbitMQConnectorTest extends TestCase
 
         // Post and reject  a message (NACK, to send to the DLQ)
         $message = new Message("bodydlq_2");
-        $this->connector->publish(new Envelope($queue, $message));
+        $this->connector->publish(new Envelope($pipe, $message));
 
-        $this->connector->consume($queue, function (Envelope $envelope) {
+        $this->connector->consume($pipe, function (Envelope $envelope) {
             $this->assertEquals("bodydlq_2", $envelope->getMessage()->getBody());
-            $this->assertEquals("test2", $envelope->getQueue()->getName());
-            $this->assertEquals("test2", $envelope->getQueue()->getTopic());
+            $this->assertEquals("test2", $envelope->getPipe()->getName());
+            $this->assertEquals("test2", $envelope->getPipe()->getProperty(RabbitMQConnector::EXCHANGE));
             $this->assertEquals([
                 'content_type' => 'text/plain',
                 'delivery_mode' => 2,
@@ -181,7 +190,9 @@ class RabbitMQConnectorTest extends TestCase
             ], $envelope->getMessage()->getHeaders());
             $this->assertEquals([
                 "exchange_type" => "direct",
-            ], $envelope->getQueue()->getProperties());
+                '_x_exchange' => 'test2',
+                '_x_routing_key' => 'test2',
+            ], $envelope->getPipe()->getProperties());
             return Message::NACK | Message::EXIT;
         }, function (Envelope $envelope, $ex) {
             throw $ex;
@@ -190,8 +201,8 @@ class RabbitMQConnectorTest extends TestCase
         // Consume the DLQ
         $this->connector->consume($dlqQueue, function (Envelope $envelope) {
             $this->assertEquals("bodydlq_2", $envelope->getMessage()->getBody());
-            $this->assertEquals("dlq_test2", $envelope->getQueue()->getName());
-            $this->assertEquals("dlq_test2", $envelope->getQueue()->getTopic());
+            $this->assertEquals("dlq_test2", $envelope->getPipe()->getName());
+            $this->assertEquals("dlq_test2", $envelope->getPipe()->getProperty(RabbitMQConnector::EXCHANGE));
             $headers = $envelope->getMessage()->getHeaders();
             unset($headers['application_headers']);
             $this->assertEquals([
@@ -207,7 +218,9 @@ class RabbitMQConnectorTest extends TestCase
             ], $headers);
             $this->assertEquals([
                 "exchange_type" => "fanout",
-            ], $envelope->getQueue()->getProperties());
+                '_x_exchange' => 'dlq_test2',
+                '_x_routing_key' => 'dlq_test2',
+            ], $envelope->getPipe()->getProperties());
             return Message::NACK | Message::EXIT;
         }, function (Envelope $envelope, $ex) {
             throw $ex;

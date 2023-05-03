@@ -13,6 +13,11 @@ use PhpAmqpLib\Wire\AMQPTable;
 
 class RabbitMQConnector implements ConnectorInterface
 {
+    const ROUTING_KEY = '_x_routing_key';
+    const EXCHANGE = '_x_exchange';
+
+    const PARAM_CAPATH = 'capath';
+
     public static function schema()
     {
         return ["amqp", "amqps"];
@@ -43,7 +48,7 @@ class RabbitMQConnector implements ConnectorInterface
 
         if ($this->uri->getScheme() == "amqps") {
             $port = 5671;
-            if (empty($args["capath"])) {
+            if (empty($args[self::PARAM_CAPATH])) {
                 throw new \InvalidArgumentException("The 'capath' parameter is required for AMQPS");
             }
 
@@ -75,30 +80,27 @@ class RabbitMQConnector implements ConnectorInterface
 
     /**
      * @param AMQPStreamConnection|AMQPSSLConnection $connection
-     * @param Queue $queue
+     * @param Pipe $pipe
      * @return AMQPChannel
      */
-    protected function createQueue($connection, Queue &$queue)
+    protected function createQueue($connection, Pipe &$pipe)
     {
-        $queue->withTopic($queue->getTopic() ?? $queue->getName());
-        $properties = $queue->getProperties();
-        $properties['exchange_type'] = $properties['exchange_type'] ?? AMQPExchangeType::DIRECT;
-        $routingKey = $properties['_x_routing_key'] ?? $queue->getName();
-        unset($properties['_x_routing_key']);
-        $queue->withProperties($properties);
+        $pipe->setPropertyIfNull('exchange_type', AMQPExchangeType::DIRECT);
+        $pipe->setPropertyIfNull(self::EXCHANGE, $pipe->getName());
+        $pipe->setPropertyIfNull(self::ROUTING_KEY, $pipe->getName());
 
         $amqpTable = [];
-        $dlq = $queue->getDeadLetterQueue();
+        $dlq = $pipe->getDeadLetterQueue();
         if (!empty($dlq)) {
             $dlq->withProperty('exchange_type', AMQPExchangeType::FANOUT);
             $channelDlq = $this->createQueue($connection, $dlq);
             $channelDlq->close();
 
             $dlqProperties = $dlq->getProperties();
-            $dlqProperties['x-dead-letter-exchange'] = $dlq->getTopic();
+            $dlqProperties['x-dead-letter-exchange'] = $dlq->getProperty(self::EXCHANGE, $dlq->getName());
             // $dlqProperties['x-dead-letter-routing-key'] = $routingKey;
-            $dlqProperties['x-message-ttl'] = $dlqProperties['x-message-ttl'] ?? 3600 * 72*1000;
-            $dlqProperties['x-expires'] = $dlqProperties['x-expires'] ?? 3600 * 72*1000 + 1000;
+            $dlqProperties['x-message-ttl'] = $dlq->getProperty('x-message-ttl', 3600 * 72*1000);
+            $dlqProperties['x-expires'] = $dlq->getProperty('x-expires', 3600 * 72*1000 + 1000);
             $amqpTable = new AMQPTable($dlqProperties);
         }
 
@@ -111,7 +113,7 @@ class RabbitMQConnector implements ConnectorInterface
             exclusive: false // the queue can be accessed in other channels
             auto_delete: false //the queue won't be deleted once the channel is closed.
         */
-        $channel->queue_declare($queue->getName(), false, true, false, false, false, $amqpTable);
+        $channel->queue_declare($pipe->getName(), false, true, false, false, false, $amqpTable);
 
         /*
             name: $exchange
@@ -120,17 +122,17 @@ class RabbitMQConnector implements ConnectorInterface
             durable: true // the exchange will survive server restarts
             auto_delete: false //the exchange won't be deleted once the channel is closed.
         */
-        $channel->exchange_declare($queue->getTopic(), $properties['exchange_type'], false, true, false);
+        $channel->exchange_declare($pipe->getProperty(self::EXCHANGE, $pipe->getName()), $pipe->getProperty('exchange_type'), false, true, false);
 
-        $channel->queue_bind($queue->getName(), $queue->getTopic(), $routingKey);
+        $channel->queue_bind($pipe->getName(), $pipe->getProperty(self::EXCHANGE, $pipe->getName()), $pipe->getProperty(self::ROUTING_KEY, $pipe->getName()));
 
         return $channel;
     }
 
-    protected function lazyConnect(Queue &$queue)
+    protected function lazyConnect(Pipe &$pipe)
     {
         $connection = $this->getConnection();
-        $channel = $this->createQueue($connection, $queue);
+        $channel = $this->createQueue($connection, $pipe);
 
         return [$connection, $channel];
     }
@@ -142,30 +144,30 @@ class RabbitMQConnector implements ConnectorInterface
         $headers['content_type'] = $headers['content_type'] ?? 'text/plain';
         $headers['delivery_mode'] = $headers['delivery_mode'] ?? AMQPMessage::DELIVERY_MODE_PERSISTENT;
 
-        $queue = clone $envelope->getQueue();
+        $pipe = clone $envelope->getPipe();
 
-        list($connection, $channel) = $this->lazyConnect($queue);
+        list($connection, $channel) = $this->lazyConnect($pipe);
 
         $rabbitMQMessageBody = $envelope->getMessage()->getBody();
 
         $rabbitMQMessage = new AMQPMessage($rabbitMQMessageBody, $headers);
 
-        $channel->basic_publish($rabbitMQMessage, $queue->getTopic(), $queue->getName());
+        $channel->basic_publish($rabbitMQMessage, $pipe->getProperty(self::EXCHANGE, $pipe->getName()), $pipe->getName());
 
         $channel->close();
         $connection->close();
     }
 
-    public function consume(Queue $queue, \Closure $onReceive, \Closure $onError, $identification = null)
+    public function consume(Pipe $pipe, \Closure $onReceive, \Closure $onError, $identification = null)
     {
-        $queue = clone $queue;
+        $pipe = clone $pipe;
 
-        list($connection, $channel) = $this->lazyConnect($queue);
+        list($connection, $channel) = $this->lazyConnect($pipe);
 
         /**
          * @param \PhpAmqpLib\Message\AMQPMessage $rabbitMQMessage
          */
-        $closure = function ($rabbitMQMessage) use ($onReceive, $onError, $queue) {
+        $closure = function ($rabbitMQMessage) use ($onReceive, $onError, $pipe) {
             $message = new Message($rabbitMQMessage->body);
             $message->withHeaders($rabbitMQMessage->get_properties());
             $message->withHeader('consumer_tag', $rabbitMQMessage->getConsumerTag());
@@ -176,7 +178,7 @@ class RabbitMQConnector implements ConnectorInterface
             $message->withHeader('body_size', $rabbitMQMessage->getBodySize());
             $message->withHeader('message_count', $rabbitMQMessage->getMessageCount());
 
-            $envelope = new Envelope($queue, $message);
+            $envelope = new Envelope($pipe, $message);
 
             try {
                 $result = $onReceive($envelope);
@@ -210,7 +212,7 @@ class RabbitMQConnector implements ConnectorInterface
         };
 
         /*
-            queue: Queue from where to get the messages
+            pipe: Queue from where to get the messages
             consumer_tag: Consumer identifier
             no_local: Don't receive messages published by this consumer.
             no_ack: If set to true, automatic acknowledgement mode will be used by this consumer. See https://www.rabbitmq.com/confirms.html for details.
@@ -218,7 +220,7 @@ class RabbitMQConnector implements ConnectorInterface
             nowait:
             callback: A PHP Callback
         */
-        $channel->basic_consume($queue->getName(), $identification ?? $queue->getName(), false, false, false, false, $closure);
+        $channel->basic_consume($pipe->getName(), $identification ?? $pipe->getName(), false, false, false, false, $closure);
 
         register_shutdown_function(function () use ($channel, $connection) {
             $channel->close();
