@@ -121,35 +121,11 @@ interface ConnectorInterface
 There is no necessary call the method `getConnection()` because the method publish() and consume() will call it automatically.
 Use the method `getConnection()` only if you need to access the connection directly.
 
-### RabbitMQ (AMQP)
+## Implemented Connectors
 
-The RabbitMQ connector uses the [php-amqplib](https://github.com/php-amqplib/php-amqplib) library.
-
-The standard behavior of the connector is to create an Exchange, a Queue and bind the queue to the exchange with a routing key (by default is the same as the queue name).
-All messages are published to the exchange and consumed from the queue.
-
-As the queue and exchange is created by the Connector it is recommended you do not use to publish/consume from existing queues.
-If you use an existing Queue you might get the error:
-
-```text
-PHP Fatal error:  Uncaught PhpAmqpLib\Exception\AMQPProtocolChannelException: PRECONDITION_FAILED - Existing queue 'test' declared with other arguments in AMQPChannel.php:224
-```
-
-You can change the behavior of the connection by using the `Pipe::withProperty()` and `Message::withHeader()` methods.
-Some of them are used by the RabbitMQConnector by setting some default values:
-
-* `Pipe::withProperty('_x_routing_key')` - Set the routing key. Default is the queue name.
-* `Pipe::withProperty('x-message-ttl')` - Only affects dead letter queues. Set the time to live of the message in milliseconds. Default 3 days.
-* `Pipe::withProperty('x-expires')` - Only affects dead letter queues. Set the time to live of the queue in milliseconds. Default 3 days.
-* `Message::withHeader('content_type')` - Set the content type of the message. Default is text/plain.
-* `Message::withHeader('delivery_mode')` - Set the delivery mode of the message. Default is 2 (persistent).
-
-Protocols:
-
-| Protocol | URI Example                                         | Notes |
-| -------- | --------------------------------------------------- | ----- |
-| AMQP     | amqp://user:pass@host:port/vhost                    | Default port: 5672.     |
-| AMQPS    | amqps://user:pass@host:port/vhost?arg1=...&args=... | Default port: 5671. Args: capath*, local_cert, local_pk, verify_peer, verify_peer_name |
+| Connector | URL / Documentation                                                                | Composer Package     |
+|-----------|------------------------------------------------------------------------------------|----------------------|
+| RabbitMQ  | [https://github.com/byjg/rabbitmq-client](https://github.com/byjg/rabbitmq-client) | byjg/rabbitmq-client |
 
 ----
 [Open source ByJG](http://opensource.byjg.com)

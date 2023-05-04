@@ -1,7 +1,6 @@
 <?php
 
 use ByJG\MessageQueueClient\Connector\Pipe;
-use ByJG\MessageQueueClient\Connector\RabbitMQConnector;
 use PHPUnit\Framework\TestCase;
 
 class QueueTest extends TestCase
