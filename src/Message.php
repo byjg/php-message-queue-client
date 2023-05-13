@@ -11,7 +11,7 @@ class Message
 
     protected $body;
 
-    protected $headers = [];
+    protected $properties = [];
 
     public function __construct($body)
     {
@@ -23,20 +23,20 @@ class Message
         return $this->body;
     }
 
-    public function getHeaders()
+    public function getProperties()
     {
-        return $this->headers;
+        return $this->properties;
     }
 
-    public function withHeader($header, $value)
+    public function withProperty($property, $value)
     {
-        $this->headers[$header] = $value;
+        $this->properties[$property] = $value;
         return $this;
     }
 
-    public function withHeaders(array $headers)
+    public function withProperties(array $properties)
     {
-        $this->headers = $headers;
+        $this->properties = $properties;
         return $this;
     }
 }

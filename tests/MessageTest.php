@@ -9,22 +9,22 @@ class MessageTest extends TestCase
     {
         $message = new Message("body");
         $this->assertEquals("body", $message->getBody());
-        $this->assertEquals([], $message->getHeaders());
+        $this->assertEquals([], $message->getProperties());
     }
 
-    public function testGetBodyWithHeaders()
+    public function testGetBodyWithProperties()
     {
         $message = new Message("body");
-        $message->withHeaders(["key" => "value"]);
+        $message->withProperties(["key" => "value"]);
         $this->assertEquals("body", $message->getBody());
-        $this->assertEquals(["key" => "value"], $message->getHeaders());
+        $this->assertEquals(["key" => "value"], $message->getProperties());
     }
 
-    public function testGetBodyWithHeader()
+    public function testGetBodyWithProperty()
     {
         $message = new Message("body");
-        $message->withHeader("key", "value");
+        $message->withProperty("key", "value");
         $this->assertEquals("body", $message->getBody());
-        $this->assertEquals(["key" => "value"], $message->getHeaders());
+        $this->assertEquals(["key" => "value"], $message->getProperties());
     }
 }
