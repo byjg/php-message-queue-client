@@ -19,5 +19,7 @@ interface ConsumerClientInterface
 
     public function getLogOutputSuccess(Message $message): string;
 
-    public function consume(Message $message): void;
+    public function consume(): void;
+
+    public function processMessage(Message $message): void;
 }
