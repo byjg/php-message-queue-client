@@ -3,11 +3,12 @@
 namespace ByJG\MessageQueueClient;
 
 use ByJG\MessageQueueClient\Connector\ConnectorInterface;
+use ByJG\MessageQueueClient\Connector\Pipe;
 use Psr\Log\LoggerInterface;
 
 interface ConsumerClientInterface
 {
-    public function getPipe(): string;
+    public function getPipe(): Pipe;
 
     public function getConnector(): ConnectorInterface;
 
