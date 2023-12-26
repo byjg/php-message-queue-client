@@ -98,6 +98,10 @@ Possible return values from the callback function:
 * `Message::REQUEUE` - Requeue the message
 * `Message::EXIT` - Exit the consume method
 
+## Consumer Client
+
+You can simplify the consume method by using the ConsumerClientTrait. See more details in the [docs/consumer-client-trait.md](docs/consumer-client-trait.md).
+
 ## Connectors
 
 The connectors are the classes responsible to connect to the message queue server and send/receive messages.
@@ -125,6 +129,7 @@ Use the method `getConnection()` only if you need to access the connection direc
 
 | Connector | URL / Documentation                                                                | Composer Package     |
 |-----------|------------------------------------------------------------------------------------|----------------------|
+| Mock      | [docs/mock-connector.md](docs/mock-connector.md)                                   | -                    |
 | RabbitMQ  | [https://github.com/byjg/rabbitmq-client](https://github.com/byjg/rabbitmq-client) | byjg/rabbitmq-client |
 
 ----
