@@ -14,9 +14,9 @@ interface ConsumerClientInterface
 
     public function getLogger(): LoggerInterface;
 
-    public function getLogOutputMessageStart(Message $message): string;
+    public function getLogOutputStart(Message $message): string;
 
-    public function getLogOutputException(\Throwable $exception): string;
+    public function getLogOutputException(\Throwable $exception, Message $message): string;
 
     public function getLogOutputSuccess(Message $message): string;
 
