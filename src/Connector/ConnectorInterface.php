@@ -11,7 +11,7 @@ interface ConnectorInterface
 
     public function setUp(Uri $uri);
 
-    public function getConnection();
+    public function getDriver();
 
     public function publish(Envelope $envelope);
 

@@ -114,7 +114,7 @@ interface ConnectorInterface
 {
     public function setUp(Uri $uri);
 
-    public function getConnection();
+    public function getDriver();
 
     public function publish(Envelope $envelope);
 
@@ -122,8 +122,8 @@ interface ConnectorInterface
 }
 ```
 
-There is no necessary call the method `getConnection()` because the method publish() and consume() will call it automatically.
-Use the method `getConnection()` only if you need to access the connection directly.
+There is no necessary call the method `getDriver()` because the method publish() and consume() will call it automatically.
+Use the method `getDriver()` only if you need to access the connection directly.
 
 ## Implemented Connectors
 
