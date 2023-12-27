@@ -54,7 +54,15 @@ class MyConsumerClient implements ConsumerClientInterface
 }
 ```
 
-It is used by the `consume()` method of the connector.
+## Publish
+
+```php
+<?php
+$consumerClient = new MyConsumerClient($connector, $pipe);
+$consumerClient->getConnector()->publish(new Envelope($consumerClient->getPipe()), new Message("Hello World"));
+```
+
+## Consume
 
 ```php
 <?php

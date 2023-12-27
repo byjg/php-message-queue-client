@@ -33,6 +33,14 @@ This is a simple client to publish and consumes messages from a Message Queue se
 └─────────────────┘
 ```
 
+## Implemented Connectors
+
+| Connector | URL / Documentation                                                                      | Composer Package        |
+|-----------|------------------------------------------------------------------------------------------|-------------------------|
+| Mock      | [docs/mock-connector.md](docs/mock-connector.md)                                         | -                       |
+| RabbitMQ  | [https://github.com/byjg/rabbitmq-client](https://github.com/byjg/rabbitmq-client)       | byjg/rabbitmq-client    |
+| Redis     | [https://github.com/byjg/redis-queue-client](https://github.com/byjg/redis-queue-client) | byjg/redis-queue-client |
+
 ## Usage
 
 ### Publish
@@ -40,10 +48,10 @@ This is a simple client to publish and consumes messages from a Message Queue se
 ```php
 <?php
 // Register the connector and associate with a scheme
-ConnectorFactory::registerConnector(RabbitMQConnector::class);
+ConnectorFactory::registerConnector(MockConnector::class);
 
 // Create a connector
-$connector = ConnectorFactory::create(new Uri("amqp://$user:$pass@$host:$port/$vhost"));
+$connector = ConnectorFactory::create(new Uri("mock://local"));
 
 // Create a queue
 $pipe = new Pipe("test");
@@ -61,10 +69,10 @@ $connector->publish(new Envelope($pipe, $message));
 ```php
 <?php
 // Register the connector and associate with a scheme
-ConnectorFactory::registerConnector(RabbitMQConnector::class);
+ConnectorFactory::registerConnector(MockConnector::class);
 
 // Create a connector
-$connector = ConnectorFactory::create(new Uri("amqp://$user:$pass@$host:$port/$vhost"));
+$connector = ConnectorFactory::create(new Uri("mock://local"));
 
 // Create a queue
 $pipe = new Pipe("test");
@@ -125,12 +133,6 @@ interface ConnectorInterface
 There is no necessary call the method `getDriver()` because the method publish() and consume() will call it automatically.
 Use the method `getDriver()` only if you need to access the connection directly.
 
-## Implemented Connectors
-
-| Connector | URL / Documentation                                                                | Composer Package     |
-|-----------|------------------------------------------------------------------------------------|----------------------|
-| Mock      | [docs/mock-connector.md](docs/mock-connector.md)                                   | -                    |
-| RabbitMQ  | [https://github.com/byjg/rabbitmq-client](https://github.com/byjg/rabbitmq-client) | byjg/rabbitmq-client |
 
 ----
 [Open source ByJG](http://opensource.byjg.com)
