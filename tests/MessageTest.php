@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests;
+
 use ByJG\MessageQueueClient\Message;
 use PHPUnit\Framework\TestCase;
 

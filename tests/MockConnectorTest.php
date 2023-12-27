@@ -1,5 +1,6 @@
 <?php
 
+namespace Tests;
 
 use ByJG\MessageQueueClient\Connector\ConnectorFactory;
 use ByJG\MessageQueueClient\Connector\Pipe;
