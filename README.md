@@ -133,6 +133,12 @@ interface ConnectorInterface
 There is no necessary call the method `getDriver()` because the method publish() and consume() will call it automatically.
 Use the method `getDriver()` only if you need to access the connection directly.
 
+## Dependencies
+
+```mermaid
+flowchart TD
+    MessageClient --> URI
+```
 
 ----
 [Open source ByJG](http://opensource.byjg.com)
