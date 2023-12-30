@@ -137,7 +137,7 @@ Use the method `getDriver()` only if you need to access the connection directly.
 
 ```mermaid
 flowchart TD
-    MessageClient --> URI
+    byjg/message-queue-client --> byjg/uri
 ```
 
 ----
