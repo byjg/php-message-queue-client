@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests;
+
 use ByJG\MessageQueueClient\Connector\Pipe;
 use ByJG\MessageQueueClient\Envelope;
 use ByJG\MessageQueueClient\Message;

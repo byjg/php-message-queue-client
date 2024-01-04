@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests;
+
 use ByJG\MessageQueueClient\Connector\Pipe;
 use PHPUnit\Framework\TestCase;
 

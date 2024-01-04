@@ -3,3 +3,4 @@ test_consume.php
 test_publish.php
 composer.lock
 .phpunit.result.cache
+.idea
