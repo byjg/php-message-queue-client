@@ -5,8 +5,8 @@ namespace ByJG\MessageQueueClient;
 use ByJG\MessageQueueClient\Connector\ConnectorInterface;
 use ByJG\MessageQueueClient\Connector\Pipe;
 use ByJG\MessageQueueClient\Envelope as MQEnvelope;
-use ByJG\MessageQueueClient\Message;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 trait ConsumerClientTrait
 {
@@ -18,7 +18,7 @@ trait ConsumerClientTrait
 
     abstract public function getLogOutputStart(Message $message): string;
 
-    abstract public function getLogOutputException(\Throwable $exception, Message $message): string;
+    abstract public function getLogOutputException(Throwable $exception, Message $message): string;
 
     abstract public function getLogOutputSuccess(Message $message): string;
 

@@ -2,9 +2,9 @@
 
 namespace Tests;
 
-use ByJG\MessageQueueClient\ConsumerClientTrait;
 use ByJG\MessageQueueClient\Envelope;
 use ByJG\MessageQueueClient\Message;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Tests\Fixtures\ConsumerClient;
 use Tests\Fixtures\ConsumerClientError;
@@ -56,7 +56,7 @@ class ConsumerClientTraitTest extends TestCase
         $client->getConnector()->publish($envelope);
 
         // Consuming the message - It will trigger the tests
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Process error");
         $client->consume();
     }
