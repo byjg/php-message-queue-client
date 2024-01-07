@@ -16,5 +16,5 @@ interface ConnectorInterface
 
     public function publish(Envelope $envelope): void;
 
-    public function consume(Pipe $pipe, Closure $onReceive, Closure $onError, $identification = null): void;
+    public function consume(Pipe $pipe, Closure $onReceive, Closure $onError, ?string $identification = null): void;
 }

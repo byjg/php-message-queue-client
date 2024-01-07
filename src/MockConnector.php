@@ -30,7 +30,7 @@ class MockConnector implements ConnectorInterface
     /**
      * @return mixed
      */
-    public function getDriver(): mixed
+    public function getDriver(): string
     {
         $hash = md5(trim(strval($this->uri), "/"));
         if (!isset(self::$mockedConnections[$hash])) {
@@ -44,7 +44,7 @@ class MockConnector implements ConnectorInterface
         self::$mockedConnections[$this->getDriver()][$envelope->getPipe()->getName()][] = $envelope;
     }
 
-    public function consume(Pipe $pipe, Closure $onReceive, Closure $onError, $identification = null): void
+    public function consume(Pipe $pipe, Closure $onReceive, Closure $onError, ?string $identification = null): void
     {
         $pipe = clone $pipe;
 
