@@ -17,7 +17,7 @@ class QueueTest extends TestCase
 
     public function testGetQueueNameWithTopic()
     {
-        $pipe = new Pipe("test", "topic");
+        $pipe = new Pipe("test");
         $this->assertEquals("test", $pipe->getName());
         $this->assertEquals([], $pipe->getProperties());
         $this->assertNull($pipe->getDeadLetter());
@@ -25,7 +25,7 @@ class QueueTest extends TestCase
 
     public function testGetQueueNameWithTopicAndProperties()
     {
-        $pipe = new Pipe("test", "topic");
+        $pipe = new Pipe("test");
         $pipe->withProperties(["key" => "value"]);
         $this->assertEquals("test", $pipe->getName());
         $this->assertEquals(["key" => "value"], $pipe->getProperties());

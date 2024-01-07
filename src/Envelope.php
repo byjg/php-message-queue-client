@@ -7,10 +7,10 @@ use ByJG\MessageQueueClient\Connector\Pipe;
 class Envelope
 {
     /** @var Message */
-    protected $message;
+    protected Message $message;
 
     /** @var Pipe */
-    protected $pipe;
+    protected Pipe $pipe;
 
     public function __construct(Pipe $pipe, Message $message)
     {

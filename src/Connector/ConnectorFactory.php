@@ -8,30 +8,32 @@ use ByJG\Util\Uri;
 
 class ConnectorFactory
 {
-    private static $config = [];
+    private static array $config = [];
 
     /**
-     * @param string $protocol
      * @param string $class
      * @return void
+     * @throws InvalidClassException
      */
-    public static function registerConnector($class)
+    public static function registerConnector(string $class): void
     {
         if (!in_array(ConnectorInterface::class, class_implements($class))) {
             throw new InvalidClassException('Class not implements ConnectorInterface!');
         }
 
+        /** @var ConnectorInterface $class */
         $protocolList = $class::schema();
-        foreach ((array)$protocolList as $item) {
+        foreach ($protocolList as $item) {
             self::$config[$item] = $class;
         }
     }
 
     /**
-     * @param Uri|string $connection
+     * @param string|Uri $connection
      * @return ConnectorInterface
+     * @throws ProtocolNotRegisteredException
      */
-    public static function create($connection): ConnectorInterface
+    public static function create(Uri|string $connection): ConnectorInterface
     {
         if ($connection instanceof Uri) {
             $uri = $connection;

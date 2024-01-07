@@ -9,32 +9,32 @@ class Message
     const REQUEUE = 0b011;
     const EXIT    = 0b100;
 
-    protected $body;
+    protected mixed $body;
 
-    protected $properties = [];
+    protected array $properties = [];
 
-    public function __construct($body)
+    public function __construct(mixed $body)
     {
         $this->body = $body;
     }
 
-    public function getBody()
+    public function getBody(): mixed
     {
         return $this->body;
     }
 
-    public function getProperties()
+    public function getProperties(): array
     {
         return $this->properties;
     }
 
-    public function withProperty($property, $value)
+    public function withProperty(string $property, mixed $value): self
     {
         $this->properties[$property] = $value;
         return $this;
     }
 
-    public function withProperties(array $properties)
+    public function withProperties(array $properties): self
     {
         $this->properties = $properties;
         return $this;

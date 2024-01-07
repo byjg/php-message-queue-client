@@ -4,16 +4,17 @@ namespace ByJG\MessageQueueClient\Connector;
 
 use ByJG\MessageQueueClient\Envelope;
 use ByJG\Util\Uri;
+use Closure;
 
 interface ConnectorInterface
 {
-    public static function schema();
+    public static function schema(): array;
 
-    public function setUp(Uri $uri);
+    public function setUp(Uri $uri): void;
 
-    public function getDriver();
+    public function getDriver(): mixed;
 
-    public function publish(Envelope $envelope);
+    public function publish(Envelope $envelope): void;
 
-    public function consume(Pipe $pipe, \Closure $onReceive, \Closure $onError, $identification = null);
+    public function consume(Pipe $pipe, Closure $onReceive, Closure $onError, ?string $identification = null): void;
 }

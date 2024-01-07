@@ -2,7 +2,6 @@
 
 namespace Tests\Fixtures;
 
-use ByJG\MessageQueueClient\Connector\ConnectorFactory;
 use ByJG\MessageQueueClient\Connector\ConnectorInterface;
 use ByJG\MessageQueueClient\Connector\Pipe;
 use ByJG\MessageQueueClient\ConsumerClientInterface;
@@ -12,6 +11,7 @@ use ByJG\MessageQueueClient\MockConnector;
 use ByJG\Util\Uri;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 class ConsumerClient implements ConsumerClientInterface
 {
@@ -50,22 +50,22 @@ class ConsumerClient implements ConsumerClientInterface
         return $this->logger;
     }
 
-    public function getLogOutputStart(\ByJG\MessageQueueClient\Message $message): string
+    public function getLogOutputStart(Message $message): string
     {
         return "Processing: " . $message->getBody();
     }
 
-    public function getLogOutputException(\Throwable $exception, \ByJG\MessageQueueClient\Message $message): string
+    public function getLogOutputException(Throwable $exception, Message $message): string
     {
         return "Error: " . $message->getBody();
     }
 
-    public function getLogOutputSuccess(\ByJG\MessageQueueClient\Message $message): string
+    public function getLogOutputSuccess(Message $message): string
     {
         return "Success: " . $message->getBody();
     }
 
-    public function processMessage(\ByJG\MessageQueueClient\Message $message): void
+    public function processMessage(Message $message): void
     {
         $this->testCase->assertEquals($this->expectedMessage, $message);
     }

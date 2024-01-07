@@ -4,42 +4,42 @@ namespace ByJG\MessageQueueClient\Connector;
 
 class Pipe
 {
-    protected $pipe;
+    protected string $pipe;
 
-    protected $properties = [];
+    protected array $properties = [];
 
-    /** @var Pipe */
-    protected $deadLetter = null;
+    /** @var Pipe|null */
+    protected ?Pipe $deadLetter = null;
 
     public function __construct($pipe)
     {
         $this->pipe = $pipe;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->pipe;
     }
 
-    public function withProperty($property, $value)
+    public function withProperty(string $property, mixed $value): self
     {
         $this->properties[$property] = $value;
         return $this;
     }
 
-    public function withProperties(array $properties)
+    public function withProperties(array $properties): self
     {
         $this->properties = $properties;
         return $this;
     }
 
-    public function setProperty($property, $value)
+    public function setProperty(string $property, mixed $value): self
     {
         $this->properties[$property] = $value;
         return $this;
     }
 
-    public function setPropertyIfNull($property, $value)
+    public function setPropertyIfNull(string $property, mixed $value): self
     {
         if (!isset($this->properties[$property])) {
             $this->properties[$property] = $value;
@@ -47,28 +47,28 @@ class Pipe
         return $this;
     }
 
-    public function deleteProperty($property)
+    public function deleteProperty(string $property): self
     {
         unset($this->properties[$property]);
         return $this;
     }
 
-    public function getProperty($property, $default = null)
+    public function getProperty(string $property, mixed $default = null): mixed
     {
         return $this->properties[$property] ?? $default;
     }
 
-    public function getProperties()
+    public function getProperties(): array
     {
         return $this->properties;
     }
 
-    public function getDeadLetter()
+    public function getDeadLetter(): ?Pipe
     {
         return $this->deadLetter;
     }
 
-    public function withDeadLetter(Pipe $deadLetter)
+    public function withDeadLetter(Pipe $deadLetter): self
     {
         $this->deadLetter = $deadLetter;
         return $this;
