@@ -5,6 +5,8 @@ namespace Tests;
 use ByJG\MessageQueueClient\Connector\ConnectorFactory;
 use ByJG\MessageQueueClient\Connector\Pipe;
 use ByJG\MessageQueueClient\Envelope;
+use ByJG\MessageQueueClient\Exception\InvalidClassException;
+use ByJG\MessageQueueClient\Exception\ProtocolNotRegisteredException;
 use ByJG\MessageQueueClient\Message;
 use ByJG\MessageQueueClient\MockConnector;
 use ByJG\Util\Uri;
@@ -12,6 +14,10 @@ use PHPUnit\Framework\TestCase;
 
 class MockConnectorTest extends TestCase
 {
+    /**
+     * @throws InvalidClassException
+     * @throws ProtocolNotRegisteredException
+     */
     public function testPublishConsume()
     {
         ConnectorFactory::registerConnector(MockConnector::class);
@@ -27,8 +33,7 @@ class MockConnectorTest extends TestCase
             $this->assertEquals("body", $envelope->getMessage()->getBody());
             return Message::ACK;
         }, function () {
-            $this->assertTrue(false);
-            return Message::NACK;
+            $this->fail();
         });
     }
 

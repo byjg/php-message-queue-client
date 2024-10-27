@@ -5,6 +5,7 @@ namespace ByJG\MessageQueueClient;
 use ByJG\MessageQueueClient\Connector\ConnectorInterface;
 use ByJG\MessageQueueClient\Connector\Pipe;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 interface ConsumerClientInterface
 {
@@ -16,7 +17,7 @@ interface ConsumerClientInterface
 
     public function getLogOutputStart(Message $message): string;
 
-    public function getLogOutputException(\Throwable $exception, Message $message): string;
+    public function getLogOutputException(Throwable $exception, Message $message): string;
 
     public function getLogOutputSuccess(Message $message): string;
 
