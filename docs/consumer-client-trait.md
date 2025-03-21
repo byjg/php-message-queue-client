@@ -8,6 +8,9 @@ You need to define the connector, the pipe name and the process function.
 class MyConsumerClient implements ConsumerClientInterface
 {
     use ConsumerClientTrait;
+    
+    protected ConnectorInterface $connector;
+    protected Pipe $pipe;
 
     public function __construct(ConnectorInterface $connector, Pipe $pipe)
     {
@@ -46,10 +49,10 @@ class MyConsumerClient implements ConsumerClientInterface
         return "Success";
     }
     
-    public function processMessage(Message $message)
+    public function processMessage(Message $message): void
     {
         echo "Process the message";
-        echo $message()->getBody();
+        echo $message->getBody();
     }
 }
 ```
@@ -59,7 +62,14 @@ class MyConsumerClient implements ConsumerClientInterface
 ```php
 <?php
 $consumerClient = new MyConsumerClient($connector, $pipe);
-$consumerClient->getConnector()->publish(new Envelope($consumerClient->getPipe()), new Message("Hello World"));
+
+// Create a message
+$message = new Message("Hello World");
+
+// Publish the message into the queue
+$consumerClient->getConnector()->publish(
+    new Envelope($consumerClient->getPipe(), $message)
+);
 ```
 
 ## Consume

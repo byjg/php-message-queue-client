@@ -126,18 +126,30 @@ All connector have the following interface:
 <?php
 interface ConnectorInterface
 {
-    public function setUp(Uri $uri);
+    public static function schema(): array;
 
-    public function getDriver();
+    public function setUp(Uri $uri): void;
 
-    public function publish(Envelope $envelope);
+    public function getDriver(): mixed;
 
-    public function consume(Pipe $pipe, \Closure $onReceive, \Closure $onError, $identification = null);
+    public function publish(Envelope $envelope): void;
+
+    public function consume(Pipe $pipe, \Closure $onReceive, \Closure $onError, ?string $identification = null): void;
 }
 ```
 
 There is no necessary call the method `getDriver()` because the method publish() and consume() will call it automatically.
 Use the method `getDriver()` only if you need to access the connection directly.
+
+## Documentation
+
+- [Pipe Class](docs/pipe.md) - Represents a message queue or topic
+- [Message Class](docs/message.md) - Represents a message that can be published or consumed
+- [Envelope Class](docs/envelope.md) - Encapsulates a message with its destination pipe
+- [Connector Interface](docs/connector-interface.md) - Interface for message queue connectors
+- [Connector Factory](docs/connector-factory.md) - Factory for creating connector instances
+- [Mock Connector](docs/mock-connector.md) - Simple connector for testing
+- [Consumer Client Trait](docs/consumer-client-trait.md) - Helper for implementing consumer clients
 
 ## Dependencies
 
