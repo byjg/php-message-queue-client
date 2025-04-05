@@ -1,3 +1,7 @@
+---
+sidebar_position: 7
+---
+
 # Consumer Client Trait
 
 The `ConsumerClientTrait` is a helper to implement a consumer client. It implements the `ConsumerClientInterface`.

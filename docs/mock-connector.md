@@ -1,3 +1,7 @@
+---
+sidebar_position: 6
+---
+
 # Mock Connector
 
 The Mock Connector is a connector that simulates a message queue for testing purposes without requiring an actual message queue server setup.

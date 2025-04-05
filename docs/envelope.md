@@ -1,3 +1,7 @@
+---
+sidebar_position: 3
+---
+
 # Envelope Class
 
 The `Envelope` class encapsulates a message with its destination pipe (queue or topic). It is used to publish messages to a specific pipe.

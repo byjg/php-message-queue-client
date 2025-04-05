@@ -169,12 +169,17 @@ Use the method `getDriver()` only if you need to access the connection directly.
 
 ## Documentation
 
+### Core Components
 - [Pipe Class](docs/pipe.md) - Represents a message queue or topic
 - [Message Class](docs/message.md) - Represents a message that can be published or consumed
 - [Envelope Class](docs/envelope.md) - Encapsulates a message with its destination pipe
+
+### Connectors
 - [Connector Interface](docs/connector-interface.md) - Interface for message queue connectors
 - [Connector Factory](docs/connector-factory.md) - Factory for creating connector instances
 - [Mock Connector](docs/mock-connector.md) - Simple connector for testing
+
+### Helpers
 - [Consumer Client Trait](docs/consumer-client-trait.md) - Helper for implementing consumer clients
 
 ## Dependencies

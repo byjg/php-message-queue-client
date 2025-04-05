@@ -1,3 +1,7 @@
+---
+sidebar_position: 5
+---
+
 # Connector Factory
 
 The `ConnectorFactory` is a static class that manages connector registrations and creates connector instances based on URI schemes.

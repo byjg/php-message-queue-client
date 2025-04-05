@@ -1,3 +1,7 @@
+---
+sidebar_position: 2
+---
+
 # Message Class
 
 The `Message` class represents a message that can be published to or consumed from a message queue.

@@ -1,3 +1,7 @@
+---
+sidebar_position: 4
+---
+
 # Connector Interface
 
 The `ConnectorInterface` defines the methods that all message queue connectors must implement. This interface allows the library to work with different message queue systems in a standardized way.

@@ -1,3 +1,7 @@
+---
+sidebar_position: 1
+---
+
 # Pipe Class
 
 The `Pipe` class represents a message queue or topic in the messaging system. It contains the name of the queue and optional properties associated with it.
