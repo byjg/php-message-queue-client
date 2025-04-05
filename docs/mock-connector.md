@@ -10,6 +10,10 @@ It stores messages in memory using a static array and provides a simplified way 
 
 ```php
 <?php
+use ByJG\MessageQueueClient\Connector\ConnectorFactory;
+use ByJG\MessageQueueClient\MockConnector;
+use ByJG\Util\Uri;
+
 // Register the connector and associate with a scheme
 ConnectorFactory::registerConnector(MockConnector::class);
 

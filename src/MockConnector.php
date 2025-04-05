@@ -61,6 +61,5 @@ class MockConnector implements ConnectorInterface
             throw $ex;
         }
     }
-
 }
 

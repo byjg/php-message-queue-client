@@ -5,6 +5,14 @@ You need to define the connector, the pipe name and the process function.
 
 ```php
 <?php
+use ByJG\MessageQueueClient\ConsumerClientInterface;
+use ByJG\MessageQueueClient\ConsumerClientTrait;
+use ByJG\MessageQueueClient\Connector\ConnectorInterface;
+use ByJG\MessageQueueClient\Connector\Pipe;
+use ByJG\MessageQueueClient\Message;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+
 class MyConsumerClient implements ConsumerClientInterface
 {
     use ConsumerClientTrait;
@@ -61,6 +69,13 @@ class MyConsumerClient implements ConsumerClientInterface
 
 ```php
 <?php
+use ByJG\MessageQueueClient\Connector\ConnectorFactory;
+use ByJG\MessageQueueClient\Connector\Pipe;
+use ByJG\MessageQueueClient\Envelope;
+use ByJG\MessageQueueClient\Message;
+use ByJG\MessageQueueClient\MockConnector;
+use ByJG\Util\Uri;
+
 $consumerClient = new MyConsumerClient($connector, $pipe);
 
 // Create a message
@@ -76,6 +91,11 @@ $consumerClient->getConnector()->publish(
 
 ```php
 <?php
+use ByJG\MessageQueueClient\Connector\ConnectorFactory;
+use ByJG\MessageQueueClient\Connector\Pipe;
+use ByJG\MessageQueueClient\MockConnector;
+use ByJG\Util\Uri;
+
 // Register the connector and associate with a scheme
 ConnectorFactory::registerConnector(MockConnector::class);
 
