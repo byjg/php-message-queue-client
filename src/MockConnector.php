@@ -13,6 +13,7 @@ class MockConnector implements ConnectorInterface
 {
     public static array $mockedConnections = [];
 
+    #[\Override]
     public static function schema(): array
     {
         return ["mock"];
@@ -22,6 +23,7 @@ class MockConnector implements ConnectorInterface
     /** @var Uri */
     protected Uri $uri;
 
+    #[\Override]
     public function setUp(Uri $uri): void
     {
         $this->uri = $uri;
@@ -30,6 +32,7 @@ class MockConnector implements ConnectorInterface
     /**
      * @return mixed
      */
+    #[\Override]
     public function getDriver(): string
     {
         $hash = md5(trim(strval($this->uri), "/"));
@@ -39,11 +42,13 @@ class MockConnector implements ConnectorInterface
         return $hash;
     }
 
+    #[\Override]
     public function publish(Envelope $envelope): void
     {
         self::$mockedConnections[$this->getDriver()][$envelope->getPipe()->getName()][] = $envelope;
     }
 
+    #[\Override]
     public function consume(Pipe $pipe, Closure $onReceive, Closure $onError, ?string $identification = null): void
     {
         $pipe = clone $pipe;
@@ -56,6 +61,5 @@ class MockConnector implements ConnectorInterface
             throw $ex;
         }
     }
-
 }
 

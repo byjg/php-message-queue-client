@@ -33,11 +33,13 @@ class ConsumerClient implements ConsumerClientInterface
         $this->logger = new LoggerAssert($this->testCase, $this->expectedLogs);
     }
 
+    #[\Override]
     public function getPipe(): Pipe
     {
         return new Pipe('test');
     }
 
+    #[\Override]
     public function getConnector(): ConnectorInterface
     {
         $mock = new MockConnector();
@@ -45,26 +47,31 @@ class ConsumerClient implements ConsumerClientInterface
         return $mock;
     }
 
+    #[\Override]
     public function getLogger(): LoggerInterface
     {
         return $this->logger;
     }
 
+    #[\Override]
     public function getLogOutputStart(Message $message): string
     {
         return "Processing: " . $message->getBody();
     }
 
+    #[\Override]
     public function getLogOutputException(Throwable $exception, Message $message): string
     {
         return "Error: " . $message->getBody();
     }
 
+    #[\Override]
     public function getLogOutputSuccess(Message $message): string
     {
         return "Success: " . $message->getBody();
     }
 
+    #[\Override]
     public function processMessage(Message $message): void
     {
         $this->testCase->assertEquals($this->expectedMessage, $message);
