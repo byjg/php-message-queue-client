@@ -1,6 +1,6 @@
 {
   "name": "byjg/message-queue-client",
-  "description": "A generic and extensible lightweight messaging client to publish and consume messages from messaging servers like Amazon SQS, Amazon SNS, Google PubSub, RabbitMQ, Kafka, etc.",
+  "description": "Minimal PHP foundation for building any message-queue driver.",
   "autoload": {
     "psr-4": {
       "ByJG\\MessageQueueClient\\": "src/"
