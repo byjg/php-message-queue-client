@@ -4,11 +4,10 @@ namespace ByJG\MessageQueueClient;
 
 class Message
 {
-    const ACK     = 0b000;
-    const NACK    = 0b001;
-    const REQUEUE = 0b011;
-    const EXIT    = 0b100;
-
+    const ACK     = 0b0001;
+    const NACK    = 0b0010;
+    const REQUEUE = 0b0100;
+    const EXIT    = 0b1000;
     protected mixed $body;
 
     protected array $properties = [];
