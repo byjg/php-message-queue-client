@@ -6,7 +6,9 @@ sidebar_position: 6
 
 The Mock Connector is a connector that simulates a message queue for testing purposes without requiring an actual message queue server setup.
 
-It stores messages in memory using a static array and provides a simplified way to test message queue functionality.
+:::tip Testing
+The Mock Connector stores messages in memory using a static array and provides a simplified way to test message queue functionality without external dependencies.
+:::
 
 ## Usage
 
@@ -27,7 +29,9 @@ $connector = ConnectorFactory::create(new Uri("mock://local"));
 
 ### Publish & Consume
 
-It is the same as the other connectors. See the [README](https://github.com/byjg/php-message-queue-client) for basic publish and consume examples.
+:::note
+The usage is the same as other connectors. See the main [README](../README.md) for basic publish and consume examples.
+:::
 
 ### How it Works Internally
 

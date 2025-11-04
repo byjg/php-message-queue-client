@@ -6,6 +6,10 @@ sidebar_position: 5
 
 The `ConnectorFactory` is a static class that manages connector registrations and creates connector instances based on URI schemes.
 
+:::info
+The factory pattern allows you to create the appropriate connector automatically based on the URI scheme.
+:::
+
 ## Registering Connectors
 
 Before using a connector, you must register it with the factory:
@@ -65,15 +69,17 @@ $redisConnector = ConnectorFactory::create("redis://localhost:6379/0");
 
 ## Error Handling
 
+:::warning Exceptions
 The factory will throw exceptions in these cases:
 
-- `InvalidClassException`: If the registered connector class doesn't implement `ConnectorInterface`
-- `ProtocolNotRegisteredException`: If you try to create a connector for a URI scheme that hasn't been registered
+- **`InvalidClassException`**: If the registered connector class doesn't implement `ConnectorInterface`
+- **`ProtocolNotRegisteredException`**: If you try to create a connector for a URI scheme that hasn't been registered
+:::
 
 ```php
 <?php
 try {
-    // This will throw ProtocolNotRegisteredException if "sqs" connector isn't registered
+    // This will throw ProtocolNotRegisteredException if the "sqs" connector isn't registered
     $connector = ConnectorFactory::create("sqs://access:secret@region/queue");
 } catch (ProtocolNotRegisteredException $e) {
     echo "No connector registered for this protocol: " . $e->getMessage();

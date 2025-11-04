@@ -6,6 +6,10 @@ sidebar_position: 1
 
 The `Pipe` class represents a message queue or topic in the messaging system. It contains the name of the queue and optional properties associated with it.
 
+:::info
+The Pipe class is a fundamental component that defines where messages will be published to or consumed from.
+:::
+
 ## Basic Usage
 
 ```php
@@ -30,7 +34,7 @@ You can add properties to the pipe for connector-specific configurations:
 $pipe->withProperty("durable", true)
      ->withProperty("auto_delete", false);
 
-// Or add multiple properties at once
+// Or replace all properties at once
 $pipe->withProperties([
     "durable" => true,
     "auto_delete" => false
@@ -45,7 +49,9 @@ $allProperties = $pipe->getProperties();
 
 ## Dead Letter Queues
 
-A dead letter queue is a pipe where messages that cannot be processed are sent to:
+:::tip
+A dead letter queue is a pipe where messages that cannot be processed are sent to. This is useful for handling failed messages without losing them.
+:::
 
 ```php
 <?php
@@ -69,7 +75,7 @@ $dlq = $pipe->getDeadLetter();
 | `__construct(string $pipe)`                                   | Creates a new pipe with the given name       |
 | `getName(): string`                                           | Returns the name of the pipe                 |
 | `withProperty(string $property, mixed $value): self`          | Adds a property to the pipe                  |
-| `withProperties(array $properties): self`                     | Adds multiple properties to the pipe         |
+| `withProperties(array $properties): self`                     | Replaces all properties with the given array |
 | `setProperty(string $property, mixed $value): self`           | Sets a property (alias for withProperty)     |
 | `setPropertyIfNull(string $property, mixed $value): self`     | Sets a property only if it doesn't exist     |
 | `deleteProperty(string $property): self`                      | Removes a property from the pipe             |

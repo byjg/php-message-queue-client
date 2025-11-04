@@ -6,6 +6,10 @@ sidebar_position: 4
 
 The `ConnectorInterface` defines the methods that all message queue connectors must implement. This interface allows the library to work with different message queue systems in a standardized way.
 
+:::tip
+Implementing this interface allows you to add support for any message queue system (RabbitMQ, Redis, SQS, Kafka, etc.).
+:::
+
 ## Interface Methods
 
 ```php
@@ -157,17 +161,28 @@ public function consume(Pipe $pipe, Closure $onReceive, Closure $onError, ?strin
 
 ## Implementing a Connector
 
-To implement a new connector:
-
+:::info Steps to implement a connector
 1. Create a class that implements `ConnectorInterface`
-2. Register it with the `ConnectorFactory`:
+2. Implement all required methods from the interface
+3. Register it with the `ConnectorFactory`
+4. Use it with your custom URI scheme
+:::
+
+**Example:**
 
 ```php
 <?php
+// 1. Create your connector class
+class MyCustomConnector implements ConnectorInterface
+{
+    // ... implement all interface methods
+}
+
+// 2. Register it with the factory
 ConnectorFactory::registerConnector(MyCustomConnector::class);
 ```
 
-3. Use it with your message queue URI scheme:
+**Usage:**
 
 ```php
 <?php

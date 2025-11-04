@@ -6,6 +6,10 @@ sidebar_position: 3
 
 The `Envelope` class encapsulates a message with its destination pipe (queue or topic). It is used to publish messages to a specific pipe.
 
+:::info
+An Envelope combines a Message with a Pipe to create a complete unit for publishing to a message queue.
+:::
+
 ## Basic Usage
 
 ```php
@@ -58,7 +62,9 @@ $pipeProperties = $pipe->getProperties();
 
 ## Use in Connector Implementation
 
-If you are implementing a connector, you will receive an Envelope when publishing:
+:::note
+If you are implementing a custom connector, you will receive an Envelope when publishing.
+:::
 
 ```php
 <?php

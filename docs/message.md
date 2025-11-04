@@ -6,6 +6,10 @@ sidebar_position: 2
 
 The `Message` class represents a message that can be published to or consumed from a message queue.
 
+:::info
+Messages can contain any type of data in their body: strings, JSON, objects, or serialized data.
+:::
+
 ## Basic Usage
 
 ```php
@@ -38,7 +42,7 @@ You can add properties to the message for additional metadata:
 $message->withProperty("content-type", "application/json")
         ->withProperty("timestamp", time());
 
-// Or add multiple properties at once
+// Or replace all properties at once
 $message->withProperties([
     "content-type" => "application/json",
     "timestamp" => time()
@@ -50,7 +54,9 @@ $allProperties = $message->getProperties();
 
 ## Response Constants
 
-When consuming messages, your callback should return one of these constants to indicate how the message should be handled:
+:::important
+When consuming messages, your callback **must** return one of these constants to indicate how the message should be handled.
+:::
 
 ```php
 <?php
@@ -69,10 +75,10 @@ return Message::ACK | Message::EXIT; // Acknowledge and exit
 | Method                                               | Description                               |
 |------------------------------------------------------|-------------------------------------------|
 | `__construct(mixed $body)`                           | Creates a new message with the given body |
-| `getBody(): mixed`                                   | Returns the body of the message           |
-| `getProperties(): array`                             | Gets all properties                       |
-| `withProperty(string $property, mixed $value): self` | Adds a property to the message            |
-| `withProperties(array $properties): self`            | Adds multiple properties to the message   |
+| `getBody(): mixed`                                   | Returns the body of the message             |
+| `getProperties(): array`                             | Gets all properties                         |
+| `withProperty(string $property, mixed $value): self` | Adds a property to the message              |
+| `withProperties(array $properties): self`            | Replaces all properties with the given array |
 
 ## Constants Reference
 

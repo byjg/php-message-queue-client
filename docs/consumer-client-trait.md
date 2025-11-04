@@ -5,7 +5,10 @@ sidebar_position: 7
 # Consumer Client Trait
 
 The `ConsumerClientTrait` is a helper to implement a consumer client. It implements the `ConsumerClientInterface`.
-You need to define the connector, the pipe name and the process function.
+
+:::tip
+This trait simplifies the creation of consumer clients by providing a standard consume() method. You only need to define the connector, pipe, and message processing logic.
+:::
 
 ```php
 <?php
@@ -69,6 +72,20 @@ class MyConsumerClient implements ConsumerClientInterface
 }
 ```
 
+## Required Methods
+
+:::important
+You must implement all methods from the `ConsumerClientInterface`:
+
+- `getPipe()`: Return the Pipe to consume from
+- `getConnector()`: Return the ConnectorInterface instance
+- `getLogger()`: Return a PSR-3 LoggerInterface instance
+- `getLogOutputStart()`: Return log message when processing starts
+- `getLogOutputException()`: Return log message when an exception occurs
+- `getLogOutputSuccess()`: Return log message when processing succeeds
+- `processMessage()`: Implement your message processing logic
+:::
+
 ## Publish
 
 ```php
@@ -115,3 +132,6 @@ $consumerClient = new MyConsumerClient($connector, $pipe);
 // Connect to the queue and wait to consume the message
 $consumerClient->consume();
 ```
+
+----
+[Open source ByJG](http://opensource.byjg.com)
