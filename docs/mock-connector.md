@@ -30,7 +30,7 @@ $connector = ConnectorFactory::create(new Uri("mock://local"));
 ### Publish & Consume
 
 :::note
-The usage is the same as other connectors. See the main [README](../README.md) for basic publish and consume examples.
+The usage is the same as other connectors. See the main documentation for basic publish and consume examples.
 :::
 
 ### How it Works Internally
