@@ -1,10 +1,10 @@
-# Messaging Client
-
-[![Build Status](https://github.com/byjg/php-message-queue-client/actions/workflows/phpunit.yml/badge.svg?branch=main)](https://github.com/byjg/php-message-queue-client/actions/workflows/phpunit.yml)
+[![Build Status](https://github.com/byjg/php-message-queue-client/actions/workflows/phpunit.yml/badge.svg?branch=master)](https://github.com/byjg/php-message-queue-client/actions/workflows/phpunit.yml)
 [![Opensource ByJG](https://img.shields.io/badge/opensource-byjg-success.svg)](http://opensource.byjg.com)
 [![GitHub source](https://img.shields.io/badge/Github-source-informational?logo=github)](https://github.com/byjg/php-message-queue-client/)
 [![GitHub license](https://img.shields.io/github/license/byjg/php-message-queue-client.svg)](https://opensource.byjg.com/opensource/licensing.html)
 [![GitHub release](https://img.shields.io/github/release/byjg/php-message-queue-client.svg)](https://github.com/byjg/php-message-queue-client/releases/)
+
+# Messaging Client
 
 This is a simple client to publish and consumes messages from a Message Queue server.
 
@@ -39,6 +39,18 @@ This is a simple client to publish and consumes messages from a Message Queue se
 └─────────────────┘
 ```
 
+## Code Structure
+
+| Component               | Description                                          | Location                                                |
+|-------------------------|------------------------------------------------------|---------------------------------------------------------|
+| Message                 | Represents a message payload with properties         | `\ByJG\MessageQueueClient\Message`                      |
+| Pipe                    | Represents a queue or topic with optional properties | `\ByJG\MessageQueueClient\Connector\Pipe`               |
+| Envelope                | Combines a Message with its destination Pipe         | `\ByJG\MessageQueueClient\Envelope`                     |
+| ConnectorInterface      | Interface for message queue implementations          | `\ByJG\MessageQueueClient\Connector\ConnectorInterface` |
+| ConnectorFactory        | Factory for creating connector instances             | `\ByJG\MessageQueueClient\Connector\ConnectorFactory`   |
+| ConsumerClientTrait     | Helper for implementing consumer clients             | `\ByJG\MessageQueueClient\ConsumerClientTrait`          |
+| ConsumerClientInterface | Interface for consumer client implementations        | `\ByJG\MessageQueueClient\ConsumerClientInterface`      |
+
 ## Implemented Connectors
 
 | Connector | URL / Documentation                                                                      | Composer Package        |
@@ -54,6 +66,13 @@ This is a simple client to publish and consumes messages from a Message Queue se
 ```php
 <?php
 // Register the connector and associate with a scheme
+use ByJG\MessageQueueClient\Connector\ConnectorFactory;
+use ByJG\MessageQueueClient\Connector\Pipe;
+use ByJG\MessageQueueClient\Envelope;
+use ByJG\MessageQueueClient\Message;
+use ByJG\MessageQueueClient\MockConnector;
+use ByJG\Util\Uri;
+
 ConnectorFactory::registerConnector(MockConnector::class);
 
 // Create a connector
@@ -75,6 +94,13 @@ $connector->publish(new Envelope($pipe, $message));
 ```php
 <?php
 // Register the connector and associate with a scheme
+use ByJG\MessageQueueClient\Connector\ConnectorFactory;
+use ByJG\MessageQueueClient\Connector\Pipe;
+use ByJG\MessageQueueClient\Envelope;
+use ByJG\MessageQueueClient\Message;
+use ByJG\MessageQueueClient\MockConnector;
+use ByJG\Util\Uri;
+
 ConnectorFactory::registerConnector(MockConnector::class);
 
 // Create a connector
@@ -126,18 +152,35 @@ All connector have the following interface:
 <?php
 interface ConnectorInterface
 {
-    public function setUp(Uri $uri);
+    public static function schema(): array;
 
-    public function getDriver();
+    public function setUp(Uri $uri): void;
 
-    public function publish(Envelope $envelope);
+    public function getDriver(): mixed;
 
-    public function consume(Pipe $pipe, \Closure $onReceive, \Closure $onError, $identification = null);
+    public function publish(Envelope $envelope): void;
+
+    public function consume(Pipe $pipe, \Closure $onReceive, \Closure $onError, ?string $identification = null): void;
 }
 ```
 
 There is no necessary call the method `getDriver()` because the method publish() and consume() will call it automatically.
 Use the method `getDriver()` only if you need to access the connection directly.
+
+## Documentation
+
+### Core Components
+- [Pipe Class](docs/pipe.md) - Represents a message queue or topic
+- [Message Class](docs/message.md) - Represents a message that can be published or consumed
+- [Envelope Class](docs/envelope.md) - Encapsulates a message with its destination pipe
+
+### Connectors
+- [Connector Interface](docs/connector-interface.md) - Interface for message queue connectors
+- [Connector Factory](docs/connector-factory.md) - Factory for creating connector instances
+- [Mock Connector](docs/mock-connector.md) - Simple connector for testing
+
+### Helpers
+- [Consumer Client Trait](docs/consumer-client-trait.md) - Helper for implementing consumer clients
 
 ## Dependencies
 
