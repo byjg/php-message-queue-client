@@ -56,7 +56,8 @@ class LoggerAssert implements LoggerInterface
     #[\Override]
     public function error($message, array $context = array()): void
     {
-        throw new Exception("Not implemented");
+        $expectedMessage = array_shift($this->expectedLogs);
+        $this->testCase->assertEquals($expectedMessage, $message);
     }
 
     /**

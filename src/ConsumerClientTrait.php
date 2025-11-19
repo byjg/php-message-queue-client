@@ -34,7 +34,7 @@ trait ConsumerClientTrait
             $this->getLogger()->info($this->getLogOutputSuccess($envelope->getMessage()));
             return Message::ACK;
         }, function (MQEnvelope $envelope, $ex) {
-            $this->getLogger()->info($this->getLogOutputException($ex, $envelope->getMessage()));
+            $this->getLogger()->error($this->getLogOutputException($ex, $envelope->getMessage()));
             return Message::NACK;
         });
     }
