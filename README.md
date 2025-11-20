@@ -1,12 +1,11 @@
+# Message Queue Client
 [![Build Status](https://github.com/byjg/php-message-queue-client/actions/workflows/phpunit.yml/badge.svg?branch=master)](https://github.com/byjg/php-message-queue-client/actions/workflows/phpunit.yml)
 [![Opensource ByJG](https://img.shields.io/badge/opensource-byjg-success.svg)](http://opensource.byjg.com)
 [![GitHub source](https://img.shields.io/badge/Github-source-informational?logo=github)](https://github.com/byjg/php-message-queue-client/)
 [![GitHub license](https://img.shields.io/github/license/byjg/php-message-queue-client.svg)](https://opensource.byjg.com/opensource/licensing.html)
 [![GitHub release](https://img.shields.io/github/release/byjg/php-message-queue-client.svg)](https://github.com/byjg/php-message-queue-client/releases/)
 
-# Messaging Client
-
-This is a simple client to publish and consumes messages from a Message Queue server.
+A minimal PHP foundation for building message queue drivers. Features low-code publishing and consumption, decoupled components (Messages, Queues, and Connectors), and easy connector implementation.
 
 ## Features
 
@@ -41,15 +40,15 @@ This is a simple client to publish and consumes messages from a Message Queue se
 
 ## Code Structure
 
-| Component               | Description                                          | Location                                                |
-|-------------------------|------------------------------------------------------|---------------------------------------------------------|
-| Message                 | Represents a message payload with properties         | `\ByJG\MessageQueueClient\Message`                      |
-| Pipe                    | Represents a queue or topic with optional properties | `\ByJG\MessageQueueClient\Connector\Pipe`               |
-| Envelope                | Combines a Message with its destination Pipe         | `\ByJG\MessageQueueClient\Envelope`                     |
-| ConnectorInterface      | Interface for message queue implementations          | `\ByJG\MessageQueueClient\Connector\ConnectorInterface` |
-| ConnectorFactory        | Factory for creating connector instances             | `\ByJG\MessageQueueClient\Connector\ConnectorFactory`   |
-| ConsumerClientTrait     | Helper for implementing consumer clients             | `\ByJG\MessageQueueClient\ConsumerClientTrait`          |
-| ConsumerClientInterface | Interface for consumer client implementations        | `\ByJG\MessageQueueClient\ConsumerClientInterface`      |
+| Component               | Description                                                                    | Location                                                |
+|-------------------------|--------------------------------------------------------------------------------|---------------------------------------------------------|
+| Message                 | Represents a message payload with properties                                   | `\ByJG\MessageQueueClient\Message`                      |
+| Pipe                    | Abstraction representing a queue or topic destination with optional properties | `\ByJG\MessageQueueClient\Connector\Pipe`               |
+| Envelope                | Combines a Message with its destination Pipe                                   | `\ByJG\MessageQueueClient\Envelope`                     |
+| ConnectorInterface      | Interface for message queue implementations                                    | `\ByJG\MessageQueueClient\Connector\ConnectorInterface` |
+| ConnectorFactory        | Factory for creating connector instances                                       | `\ByJG\MessageQueueClient\Connector\ConnectorFactory`   |
+| ConsumerClientTrait     | Helper for implementing consumer clients                                       | `\ByJG\MessageQueueClient\ConsumerClientTrait`          |
+| ConsumerClientInterface | Interface for consumer client implementations                                  | `\ByJG\MessageQueueClient\ConsumerClientInterface`      |
 
 ## Implemented Connectors
 
