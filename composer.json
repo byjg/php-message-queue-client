@@ -1,6 +1,6 @@
 {
   "name": "byjg/message-queue-client",
-  "description": "Minimal PHP foundation for building any message-queue driver.",
+  "description": "A minimal PHP foundation for building message queue drivers. Features low-code publishing and consumption, decoupled components (Messages, Queues, and Connectors), and easy connector implementation.",
   "autoload": {
     "psr-4": {
       "ByJG\\MessageQueueClient\\": "src/"
@@ -20,12 +20,12 @@
     "psr/log": "^1.0|^2.0|^3.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^9.6|^11.5",
+    "phpunit/phpunit": "^10.5|^11.5",
     "vimeo/psalm": "^5.9|^6.13"
   },
   "scripts": {
     "test": "vendor/bin/phpunit",
-    "psalm": "vendor/bin/psalm"
+    "psalm": "vendor/bin/psalm --threads=1"
   },
   "license": "MIT"
 }

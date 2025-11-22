@@ -17,7 +17,7 @@ class ConnectorFactory
      */
     public static function registerConnector(string $class): void
     {
-        if (!in_array(ConnectorInterface::class, class_implements($class))) {
+        if (!in_array(ConnectorInterface::class, class_implements($class) ?: [])) {
             throw new InvalidClassException('Class not implements ConnectorInterface!');
         }
 
@@ -46,6 +46,7 @@ class ConnectorFactory
         }
 
         $class = self::$config[$uri->getScheme()];
+        /** @var ConnectorInterface $object */
         $object = new $class($uri);
         $object->setUp($uri);
 
