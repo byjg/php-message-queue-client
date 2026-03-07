@@ -1,12 +1,17 @@
+---
+tags: [php, queue]
+---
+
 # Message Queue Client
+
+A minimal PHP foundation for building message queue drivers. Features low-code publishing and consumption, decoupled components (Messages, Queues, and Connectors), and easy connector implementation.
+
 [![Sponsor](https://img.shields.io/badge/Sponsor-%23ea4aaa?logo=githubsponsors&logoColor=white&labelColor=0d1117)](https://github.com/sponsors/byjg)
 [![Build Status](https://github.com/byjg/php-message-queue-client/actions/workflows/phpunit.yml/badge.svg?branch=main)](https://github.com/byjg/php-message-queue-client/actions/workflows/phpunit.yml)
 [![Opensource ByJG](https://img.shields.io/badge/opensource-byjg-success.svg)](http://opensource.byjg.com)
 [![GitHub source](https://img.shields.io/badge/Github-source-informational?logo=github)](https://github.com/byjg/php-message-queue-client/)
 [![GitHub license](https://img.shields.io/github/license/byjg/php-message-queue-client.svg)](https://opensource.byjg.com/opensource/licensing.html)
 [![GitHub release](https://img.shields.io/github/release/byjg/php-message-queue-client.svg)](https://github.com/byjg/php-message-queue-client/releases/)
-
-A minimal PHP foundation for building message queue drivers. Features low-code publishing and consumption, decoupled components (Messages, Queues, and Connectors), and easy connector implementation.
 
 ## Features
 
@@ -55,7 +60,7 @@ A minimal PHP foundation for building message queue drivers. Features low-code p
 
 | Connector | URL / Documentation                                                                      | Composer Package        |
 |-----------|------------------------------------------------------------------------------------------|-------------------------|
-| Mock      | [docs/mock-connector.md](docs/mock-connector.md)                                         | -                       |
+| Mock      | [docs/mock-connector.md](mock-connector)                                         | -                       |
 | RabbitMQ  | [https://github.com/byjg/rabbitmq-client](https://github.com/byjg/rabbitmq-client)       | byjg/rabbitmq-client    |
 | Redis     | [https://github.com/byjg/redis-queue-client](https://github.com/byjg/redis-queue-client) | byjg/redis-queue-client |
 
@@ -140,7 +145,7 @@ Possible return values from the callback function:
 
 ## Consumer Client
 
-You can simplify the consume method by using the ConsumerClientTrait. See more details in the [docs/consumer-client-trait.md](docs/consumer-client-trait.md).
+You can simplify the consume method by using the ConsumerClientTrait. See more details in the [docs/consumer-client-trait.md](consumer-client-trait).
 
 ## Connectors
 
@@ -170,17 +175,17 @@ Use the method `getDriver()` only if you need to access the connection directly.
 ## Documentation
 
 ### Core Components
-- [Pipe Class](docs/pipe.md) - Represents a message queue or topic
-- [Message Class](docs/message.md) - Represents a message that can be published or consumed
-- [Envelope Class](docs/envelope.md) - Encapsulates a message with its destination pipe
+- [Pipe Class](pipe) - Represents a message queue or topic
+- [Message Class](message) - Represents a message that can be published or consumed
+- [Envelope Class](envelope) - Encapsulates a message with its destination pipe
 
 ### Connectors
-- [Connector Interface](docs/connector-interface.md) - Interface for message queue connectors
-- [Connector Factory](docs/connector-factory.md) - Factory for creating connector instances
-- [Mock Connector](docs/mock-connector.md) - Simple connector for testing
+- [Connector Interface](connector-interface) - Interface for message queue connectors
+- [Connector Factory](connector-factory) - Factory for creating connector instances
+- [Mock Connector](mock-connector) - Simple connector for testing
 
 ### Helpers
-- [Consumer Client Trait](docs/consumer-client-trait.md) - Helper for implementing consumer clients
+- [Consumer Client Trait](consumer-client-trait) - Helper for implementing consumer clients
 
 ## Dependencies
 
