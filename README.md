@@ -11,7 +11,7 @@ A minimal PHP foundation for building message queue drivers. Features low-code p
 [![Build Status](https://github.com/byjg/php-message-queue-client/actions/workflows/phpunit.yml/badge.svg?branch=main)](https://github.com/byjg/php-message-queue-client/actions/workflows/phpunit.yml)
 [![Opensource ByJG](https://img.shields.io/badge/opensource-byjg-success.svg)](http://opensource.byjg.com)
 [![GitHub source](https://img.shields.io/badge/Github-source-informational?logo=github)](https://github.com/byjg/php-message-queue-client/)
-[![GitHub license](https://img.shields.io/github/license/byjg/php-message-queue-client.svg)](https://opensource.byjg.com/opensource/licensing.html)
+[![GitHub license](https://img.shields.io/github/license/byjg/php-message-queue-client.svg)](https://opensource.byjg.com/license/)
 [![GitHub release](https://img.shields.io/github/release/byjg/php-message-queue-client.svg)](https://github.com/byjg/php-message-queue-client/releases/)
 
 ## Features
@@ -187,13 +187,6 @@ Use the method `getDriver()` only if you need to access the connection directly.
 
 ### Helpers
 - [Consumer Client Trait](docs/consumer-client-trait.md) - Helper for implementing consumer clients
-
-## Dependencies
-
-```mermaid
-flowchart TD
-    byjg/message-queue-client --> byjg/uri
-```
 
 ----
 [Open source ByJG](http://opensource.byjg.com)
