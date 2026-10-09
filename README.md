@@ -9,7 +9,8 @@ A minimal PHP foundation for building message queue drivers. Features low-code p
 
 [![Sponsor](https://img.shields.io/badge/Sponsor-%23ea4aaa?logo=githubsponsors&logoColor=white&labelColor=0d1117)](https://github.com/sponsors/byjg)
 [![Build Status](https://github.com/byjg/php-message-queue-client/actions/workflows/phpunit.yml/badge.svg?branch=main)](https://github.com/byjg/php-message-queue-client/actions/workflows/phpunit.yml)
-[![Opensource ByJG](https://img.shields.io/badge/opensource-byjg-success.svg)](http://opensource.byjg.com)
+[![Opensource ByJG](https://img.shields.io/badge/opensource-byjg-success.svg)](https://opensource.byjg.com)
+[![Install MCP Server](https://img.shields.io/badge/Install-MCP_Server-8A2BE2?logo=modelcontextprotocol&logoColor=white)](https://opensource.byjg.com/docs/ai/mcpserver-byjg-docs/)
 [![GitHub source](https://img.shields.io/badge/Github-source-informational?logo=github)](https://github.com/byjg/php-message-queue-client/)
 [![GitHub license](https://img.shields.io/github/license/byjg/php-message-queue-client.svg)](https://opensource.byjg.com/license/)
 [![GitHub release](https://img.shields.io/github/release/byjg/php-message-queue-client.svg)](https://github.com/byjg/php-message-queue-client/releases/)
@@ -188,5 +189,11 @@ Use the method `getDriver()` only if you need to access the connection directly.
 ### Helpers
 - [Consumer Client Trait](docs/consumer-client-trait.md) - Helper for implementing consumer clients
 
+## Running Tests
+
+```bash
+vendor/bin/phpunit
+```
+
 ----
-[Open source ByJG](http://opensource.byjg.com)
+[Open source ByJG](https://opensource.byjg.com)
