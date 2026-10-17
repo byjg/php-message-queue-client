@@ -189,6 +189,12 @@ Use the method `getDriver()` only if you need to access the connection directly.
 ### Helpers
 - [Consumer Client Trait](docs/consumer-client-trait.md) - Helper for implementing consumer clients
 
+## Installation
+
+```bash
+composer require "byjg/message-queue-client"
+```
+
 ## Running Tests
 
 ```bash
