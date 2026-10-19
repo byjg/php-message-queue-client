@@ -72,6 +72,10 @@ class MyConsumerClient implements ConsumerClientInterface
 }
 ```
 
+`consume()` calls `processMessage()` for each message received from `getPipe()`. It returns
+`Message::ACK` when `processMessage()` completes, and `Message::NACK` when it throws; the start,
+success and exception messages are written to `getLogger()` (`info` and `error`).
+
 ## Required Methods
 
 :::important
