@@ -5,7 +5,7 @@ tags: [php, queue]
 
 # Message Queue Client
 
-A minimal PHP foundation for building message queue drivers. Features low-code publishing and consumption, decoupled components (Messages, Queues, and Connectors), and easy connector implementation.
+One interface to publish and consume messages, whatever the broker behind it. Change the queue, or write a new connector, without changing your code.
 
 [![Sponsor](https://img.shields.io/badge/Sponsor-%23ea4aaa?logo=githubsponsors&logoColor=white&labelColor=0d1117)](https://github.com/sponsors/byjg)
 [![Build Status](https://github.com/byjg/php-message-queue-client/actions/workflows/phpunit.yml/badge.svg?branch=main)](https://github.com/byjg/php-message-queue-client/actions/workflows/phpunit.yml)
@@ -14,6 +14,30 @@ A minimal PHP foundation for building message queue drivers. Features low-code p
 [![GitHub source](https://img.shields.io/badge/Github-source-informational?logo=github)](https://github.com/byjg/php-message-queue-client/)
 [![GitHub license](https://img.shields.io/github/license/byjg/php-message-queue-client.svg)](https://opensource.byjg.com/license/)
 [![GitHub release](https://img.shields.io/github/release/byjg/php-message-queue-client.svg)](https://github.com/byjg/php-message-queue-client/releases/)
+
+## Why
+
+Each broker has its own client library, its own vocabulary (exchange, stream, topic,
+channel) and its own way to acknowledge or reject a message. Code written against one of
+them has to be rewritten to move to another, and is hard to test without the broker
+running.
+
+This library defines the contract once. Your code publishes an `Envelope` and consumes a
+`Pipe` through `ConnectorInterface`; the broker is chosen by the connection URI:
+
+```php
+$connector = ConnectorFactory::create(new Uri("amqp://user:pass@rabbit:5672/"));  // RabbitMQ
+$connector = ConnectorFactory::create(new Uri("redis://redis:6379"));             // Redis
+$connector = ConnectorFactory::create(new Uri("mock://local"));                   // tests
+
+$connector->publish(new Envelope(new Pipe("orders"), new Message($payload)));
+```
+
+- **Change the broker without touching the code.** Moving from Redis to RabbitMQ is a new
+  connection string and a different `composer require`.
+- **Test without a broker.** The `MockConnector` keeps the messages in memory.
+- **Add a broker by implementing one interface.** A connector is `publish()`, `consume()`
+  and a URI scheme; see [Connector Interface](docs/connector-interface.md).
 
 ## Features
 
