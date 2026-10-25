@@ -1,5 +1,6 @@
 ---
 sidebar_key: message-queue-client
+sidebar_category: messaging
 tags: [php, queue]
 ---
 
